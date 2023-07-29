@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:letterboxd/presentation/managers/managers.dart';
+import 'package:letterboxd/presentation/views/app/movie_details/poster_hero.dart';
 import 'package:letterboxd/presentation/widgets/_widgets.dart';
 import 'package:letterboxd/presentation/widgets/container.dart';
 import 'package:letterboxd/presentation/widgets/image_poster.dart';
+import 'package:letterboxd/test.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class BuildMovieDetailsIntro extends StatefulWidget {
@@ -18,20 +20,24 @@ class BuildMovieDetailsIntro extends StatefulWidget {
   final String synopsis;
   final String? trailerLink;
   final Widget child;
+  final bool withPosterImage;
+  final double initialScrollOffset;
 
   const BuildMovieDetailsIntro(
       {super.key,
-        this.backdropPath,
-        this.posterPath,
-        required this.title,
-        this.originalTitle,
-        this.releaseDate,
-        this.runtime,
-        this.directorName,
-        this.tagLine,
-        required this.synopsis,
-        this.trailerLink,
-        required this.child});
+      this.backdropPath,
+      this.posterPath,
+      required this.title,
+      this.originalTitle,
+      this.releaseDate,
+      this.runtime,
+      this.directorName,
+      this.tagLine,
+      required this.synopsis,
+      this.trailerLink,
+      required this.child,
+      this.initialScrollOffset = 0,
+      this.withPosterImage = true});
 
   @override
   State<BuildMovieDetailsIntro> createState() => _BuildMovieDetailsIntroState();
@@ -42,7 +48,7 @@ class _BuildMovieDetailsIntroState extends State<BuildMovieDetailsIntro>
   final GlobalKey _myWidgetKey = GlobalKey();
   late ScrollController _scrollController;
   final StreamController<double> _opacityController =
-  StreamController.broadcast();
+      StreamController.broadcast();
   double _opacity = 0.0;
   late AnimationController _accordionAnimationController;
   late Animation<double> _accordionAnimation;
@@ -75,9 +81,9 @@ class _BuildMovieDetailsIntroState extends State<BuildMovieDetailsIntro>
     double opacity = scrollOffset < animationStartPosition
         ? 0
         : scrollOffset > animationEndPosition
-        ? 1
-        : ((scrollOffset - animationStartPosition) /
-        (animationEndPosition - animationStartPosition));
+            ? 1
+            : ((scrollOffset - animationStartPosition) /
+                (animationEndPosition - animationStartPosition));
 
     _updateOpacity(opacity);
   }
@@ -85,6 +91,7 @@ class _BuildMovieDetailsIntroState extends State<BuildMovieDetailsIntro>
   @override
   void initState() {
     super.initState();
+
     _accordionAnimationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 300))
       ..addListener(() {
@@ -94,6 +101,12 @@ class _BuildMovieDetailsIntroState extends State<BuildMovieDetailsIntro>
         Tween(begin: 1.0, end: 0.0).animate(_accordionAnimationController);
 
     _scrollController = ScrollController()..addListener(_onScroll);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (widget.initialScrollOffset > 0) {
+        _scrollController.animateTo(widget.initialScrollOffset,
+            duration: const Duration(milliseconds: 1), curve: Curves.linear);
+      }
+    });
   }
 
   @override
@@ -130,14 +143,14 @@ class _BuildMovieDetailsIntroState extends State<BuildMovieDetailsIntro>
                 flexibleSpace: widget.backdropPath == null
                     ? Container(color: ColorManager.primaryColor)
                     : FlexibleSpaceBar(
-                    background: buildBackdropImage(
-                        backdropPath: widget.backdropPath)),
+                        background: buildBackdropImage(
+                            backdropPath: widget.backdropPath)),
               ),
               SliverToBoxAdapter(
                   child: buildGradientContainer(
-                    stops: [0.67, 0.72, 1],
-                    child: SizedBox(height: MediaQuery.of(context).size.height),
-                  )),
+                stops: [0.67, 0.8, 1],
+                child: SizedBox(height: MediaQuery.of(context).size.height),
+              )),
               SliverList(
                 delegate: SliverChildListDelegate([
                   Padding(
@@ -145,24 +158,27 @@ class _BuildMovieDetailsIntroState extends State<BuildMovieDetailsIntro>
                         top: widget.backdropPath == null
                             ? (viewportHeight * 0.23)
                             : (viewportHeight * 0.43)),
-                    child: Column(
-                      children: [
-                        _details(),
-                        AnimatedBuilder(
-                            animation: _accordionAnimationController,
-                            builder: (context, child) {
-                              return Transform.translate(
-                                  offset: Offset(
-                                      0,
-                                      ((-_accordionOffset) *
-                                          _accordionAnimation.value) -
-                                          75 -
-                                          ((1 - _accordionAnimation.value) *
-                                              30)),
-                                  child: child);
-                            },
-                            child: _buildSlidingContainer())
-                      ],
+                    child: Transform.translate(
+                      offset: Offset(0, -viewportHeight * 0.1349),
+                      child: Column(
+                        children: [
+                          _details(),
+                          AnimatedBuilder(
+                              animation: _accordionAnimationController,
+                              builder: (context, child) {
+                                return Transform.translate(
+                                    offset: Offset(
+                                        0,
+                                        ((-_accordionOffset) *
+                                                _accordionAnimation.value) +
+                                            (viewportHeight * 0.0224) -
+                                            ((1 - _accordionAnimation.value) *
+                                                30)),
+                                    child: child);
+                              },
+                              child: _buildSlidingContainer())
+                        ],
+                      ),
                     ),
                   )
                 ]),
@@ -181,12 +197,11 @@ class _BuildMovieDetailsIntroState extends State<BuildMovieDetailsIntro>
 
   Widget _details() {
     return Builder(builder: (context) {
-      return Padding(
-        padding: const EdgeInsets.only(
-            left: SizeManager.horizontalPadding,
-            right: SizeManager.horizontalPadding),
-        child: Transform.translate(
-          offset: const Offset(0, -90),
+      return Container(
+        child: Padding(
+          padding: const EdgeInsets.only(
+              left: SizeManager.horizontalPadding,
+              right: SizeManager.horizontalPadding),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -211,7 +226,7 @@ class _BuildMovieDetailsIntroState extends State<BuildMovieDetailsIntro>
                                   child: Padding(
                                     padding: const EdgeInsets.only(
                                         bottom:
-                                        SizeManager.horizontalPadding / 2),
+                                            SizeManager.horizontalPadding / 2),
                                     child: Text(
                                       widget.title,
                                       style: Theme.of(context)
@@ -224,10 +239,10 @@ class _BuildMovieDetailsIntroState extends State<BuildMovieDetailsIntro>
                           widget.originalTitle == null
                               ? Container()
                               : Text(widget.originalTitle!,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(fontStyle: FontStyle.italic)),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(fontStyle: FontStyle.italic)),
                           Padding(
                             padding: const EdgeInsets.only(
                               top: SizeManager.horizontalPadding,
@@ -238,24 +253,24 @@ class _BuildMovieDetailsIntroState extends State<BuildMovieDetailsIntro>
                                 widget.releaseDate == null
                                     ? buildEmptyContainer
                                     : Text(widget.releaseDate!,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall),
                                 widget.releaseDate == null ||
-                                    widget.directorName == null
+                                        widget.directorName == null
                                     ? buildEmptyContainer
                                     : Text(" • ",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                        fontSize: FontSizeManager.s20)),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                                fontSize: FontSizeManager.s20)),
                                 widget.directorName == null
                                     ? buildEmptyContainer
                                     : Text("DIRECTED BY",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall),
                               ],
                             ),
                           ),
@@ -265,35 +280,44 @@ class _BuildMovieDetailsIntroState extends State<BuildMovieDetailsIntro>
                             child: widget.directorName == null
                                 ? buildEmptyContainer
                                 : Text(
-                              widget.directorName!,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                  fontWeight: FontWeightManager.bold),
-                            ),
+                                    widget.directorName!,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                            fontWeight: FontWeightManager.bold),
+                                  ),
                           ),
                           Row(
                             children: [
                               widget.trailerLink == null
                                   ? buildEmptyContainer
                                   : Padding(
-                                padding: const EdgeInsets.only(
-                                    right: SizeManager.horizontalPadding),
-                                child: _buildTrailerButton(),
-                              ),
+                                      padding: const EdgeInsets.only(
+                                          right: SizeManager.horizontalPadding),
+                                      child: _buildTrailerButton(),
+                                    ),
                               widget.runtime == null
                                   ? buildEmptyContainer
                                   : Text("${widget.runtime} mins",
-                                  style:
-                                  Theme.of(context).textTheme.bodySmall)
+                                      style:
+                                          Theme.of(context).textTheme.bodySmall)
                             ],
                           )
                         ],
                       ),
                     ),
                   ),
-                  buildPosterImage(width: 100, posterPath: widget.posterPath)
+                  !widget.withPosterImage
+                      ? buildEmptyContainer
+                      : GestureDetector(
+                          onTap: () {
+                            Navigator.push(context, createPosterHeroRoute(_scrollController.offset));
+                          },
+                          child: Hero(
+                              tag: "poster_image",
+                              child: buildPosterImage(
+                                  width: 100, posterPath: widget.posterPath)))
                 ],
               ),
               const SizedBox(
@@ -302,15 +326,15 @@ class _BuildMovieDetailsIntroState extends State<BuildMovieDetailsIntro>
               widget.tagLine == null
                   ? buildEmptyContainer
                   : Text(
-                widget.tagLine!,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontSize: FontSizeManager.s14, letterSpacing: 1.1),
-              ),
+                      widget.tagLine!,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontSize: FontSizeManager.s14, letterSpacing: 1.1),
+                    ),
               GestureDetector(
                 onTap: _animateAccordion,
                 child: Padding(
                   padding:
-                  EdgeInsets.only(top: SizeManager.horizontalPadding * 0.6),
+                      const EdgeInsets.only(top: SizeManager.horizontalPadding * 0.6),
                   child: Text(
                     widget.synopsis,
                     key: _myWidgetKey,
@@ -338,7 +362,7 @@ class _BuildMovieDetailsIntroState extends State<BuildMovieDetailsIntro>
               borderRadius: BorderRadius.all(Radius.circular(8))),
           onPressed: () {},
           child:
-          Text("▶ TRAILER", style: Theme.of(context).textTheme.bodySmall));
+              Text("▶ TRAILER", style: Theme.of(context).textTheme.bodySmall));
     });
   }
 
@@ -405,20 +429,24 @@ class AppBarDelegate extends SliverPersistentHeaderDelegate {
               SafeArea(
                 bottom: false,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: SizeManager.horizontalPadding),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: SizeManager.horizontalPadding),
                   child: Row(
                     children: [
                       Container(
-                        decoration:_buildCircularBox(),
+                        decoration: _buildCircularBox(),
                         child: IconButton(
-
                             onPressed: () {
                               Navigator.pop(context);
-                            }, icon: const Icon(Icons.arrow_back_ios_sharp,size: 20,)),
+                            },
+                            icon: const Icon(
+                              Icons.arrow_back_ios_sharp,
+                              size: 20,
+                            )),
                       ),
                       Expanded(
                         child: Opacity(
-                          opacity:snapshot.data ?? 0.0 ,
+                          opacity: snapshot.data ?? 0.0,
                           child: Text(
                             _title,
                             softWrap: false,
@@ -427,14 +455,15 @@ class AppBarDelegate extends SliverPersistentHeaderDelegate {
                             style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
-                                fontWeight: FontWeightManager.bold
-                            ),
+                                fontWeight: FontWeightManager.bold),
                           ),
                         ),
                       ),
                       Container(
                           decoration: _buildCircularBox(),
-                          child: IconButton(onPressed: () {}, icon: const Icon(Icons.more_horiz,size:24)))
+                          child: IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.more_horiz, size: 24)))
                     ],
                   ),
                 ),
@@ -455,8 +484,8 @@ class AppBarDelegate extends SliverPersistentHeaderDelegate {
     return true;
   }
 
-  BoxDecoration _buildCircularBox()=> const BoxDecoration(
-    shape: BoxShape.circle,
-    color:  Color.fromRGBO(0, 0, 0, 0.4),
-  );
+  BoxDecoration _buildCircularBox() => const BoxDecoration(
+        shape: BoxShape.circle,
+        color: Color.fromRGBO(0, 0, 0, 0.4),
+      );
 }

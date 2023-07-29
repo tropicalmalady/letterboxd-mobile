@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import "package:letterboxd/presentation/widgets/_widgets.dart";
 import 'package:letterboxd/presentation/managers/managers.dart';
 import 'package:letterboxd/presentation/managers/string_manager.dart';
-import 'package:letterboxd/test.dart';
+
 
 List<Widget> pages = [
   _TourWidget(
