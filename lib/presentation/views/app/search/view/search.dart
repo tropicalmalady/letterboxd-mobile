@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:letterboxd/app/utils/constants.dart';
 import 'package:letterboxd/app/utils/functions.dart';
 import 'package:letterboxd/presentation/views/app/search/bloc/bloc.dart';
 import 'package:letterboxd/presentation/views/app/search/bloc/state.dart';
@@ -23,16 +24,16 @@ class BuildSearch extends StatelessWidget {
             BlocListener<SearchBloc, SearchState>(
                 listener: (context, state) async {
                   final bloc = context.read<SearchBloc>();
-                  bloc.add(SearchStatusChanged(SearchStatus.loading));
-                  (await SearchMoviesUseCase(context.read<TmdbRepository>())
-                          .execute(SearchMovieRequest(
+                  bloc.add(SearchStatusChanged(ApiStatus.loading));
+                  (await MoviesPreviewUseCase(context.read<TmdbRepository>())
+                          .execute(MoviesPreviewRequest(
                               state.query, state.moviesPreview.page)))
                       .fold((l) => print("dd ${l.code}"), (r) {
-                    bloc.add(SearchMoviesPreviewFetched(
+                    bloc.add(MoviePreviewsPreviewFetched(
                         page: r.page,
                         totalPages: r.totalPages,
                         results: r.results));
-                    bloc.add(SearchStatusChanged(SearchStatus.success));
+                    bloc.add(SearchStatusChanged(ApiStatus.success));
                   });
                 },
                 listenWhen: (prev, next) =>

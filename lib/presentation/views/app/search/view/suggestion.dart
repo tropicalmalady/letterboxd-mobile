@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:letterboxd/presentation/managers/managers.dart';
+import 'package:letterboxd/app/utils/constants.dart';
+import 'package:letterboxd/presentation/managers/_managers.dart';
+import 'package:letterboxd/presentation/views/app/movie_details/bloc/bloc.dart';
+import 'package:letterboxd/presentation/views/app/movie_details/view/movie_details.dart';
 import 'package:letterboxd/presentation/views/app/search/bloc/bloc.dart';
 import 'package:letterboxd/presentation/views/app/search/bloc/event.dart';
 
@@ -29,8 +32,7 @@ class _BuildSearchFilmSuggestionsState
             (context.read<SearchBloc>().state.moviesPreview.page <
                 context.read<SearchBloc>().state.moviesPreview.totalPages) &&
             (context.read<SearchBloc>().state.nextPageStatus ==
-                SearchStatus.initial)) {
-          print("----reading");
+                ApiStatus.initial)) {
           context.read<SearchBloc>().add(SearchNextPageRequested());
         }
       });
@@ -39,8 +41,7 @@ class _BuildSearchFilmSuggestionsState
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SearchBloc, SearchState>(builder: (context, state) {
-      print(state.nextPageStatus);
-      bool nextPageLoading = state.nextPageStatus == SearchStatus.loading;
+      bool nextPageLoading = state.nextPageStatus == ApiStatus.loading;
       int previewsLength = state.moviesPreview.results.length;
       return ListView.builder(
           controller: _scrollController,
@@ -49,12 +50,13 @@ class _BuildSearchFilmSuggestionsState
                   (index + 1 == previewsLength + 1))
               ? Padding(
                   padding:
-                      const EdgeInsets.only(top: SizeManager.horizontalPadding),
-                  child: LoaderWidget(
+                      const EdgeInsets.only(top: SpacingManager.md),
+                  child: BuildLoader(
                     withBackdrop: false,
                     fraction: 0.5,
                   ))
               : buildSearchFilmSuggestion(
+            id:state.moviesPreview.results[index].id,
                   title: state.moviesPreview.results[index].title,
                   originalTitle:
                       state.moviesPreview.results[index].originalTitle ==
@@ -78,88 +80,97 @@ Widget buildSearchFilmSuggestion(
     String? posterPath,
     String? releaseDate,
     String? originalTitle,
-    String? directorName}) {
+    String? directorName,
+    required  int id
+    }) {
   const lineHeight = 1.5;
   return Builder(builder: (context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(
-              top: SizeManager.horizontalPadding * 2,
-              bottom: SizeManager.horizontalPadding * 2,
-              left: SizeManager.horizontalPadding),
-          child: Row(
-            children: [
-              Container(
-                  clipBehavior: Clip.hardEdge,
-                  padding: const EdgeInsets.all(0.7),
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(4)),
-                      border: Border.all(
-                          width: 0.7, color: ColorManager.primaryColor7)),
-                  child: SizedBox(
-                    width: 50,
-                    child: AspectRatio(
-                      aspectRatio: 2 / 3,
-                      child: posterPath != null
-                          ? Image.network(
-                              "https://image.tmdb.org/t/p/w200$posterPath",
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, err, st) => Container(),
-                            )
-                          : null,
-                    ),
-                  )),
-              Expanded(
-                  child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: SizeManager.horizontalPadding),
-                child: RichText(
-                  text: TextSpan(
-                      text: title,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineLarge
-                          ?.copyWith(fontSize: 19, height: lineHeight),
-                      children: [
-                        TextSpan(
-                            text: releaseDate != null ? " $releaseDate" : "",
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelMedium
-                                ?.copyWith(height: lineHeight)),
-                        TextSpan(
-                            text: originalTitle != null
-                                ? ",'$originalTitle'"
-                                : "",
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelMedium
-                                ?.copyWith(
-                                    fontStyle: FontStyle.italic,
-                                    height: lineHeight)),
-                        TextSpan(
-                            text: directorName != null ? ", directed by" : "",
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelMedium
-                                ?.copyWith(height: lineHeight)),
-                        TextSpan(
-                            text: directorName != null ? " $directorName" : "",
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelMedium
-                                ?.copyWith(
-                                    height: lineHeight,
-                                    fontWeight: FontWeightManager.bold))
-                      ]),
-                ),
-              ))
-            ],
+    return buildButton(
+      onPressed: (){
+        context.read<MovieDetailsBloc>().add(MovieDetailsRequested(id));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const BuildMovieDetails()));
+      },
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+                top: SpacingManager.xlg,
+                bottom: SpacingManager.xlg,
+                left: SpacingManager.md),
+            child: Row(
+              children: [
+                Container(
+                    clipBehavior: Clip.hardEdge,
+                    padding: const EdgeInsets.all(0.7),
+                    decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(Radius.circular(4)),
+                        border: Border.all(
+                            width: 0.7, color: ColorManager.primaryColor7)),
+                    child: SizedBox(
+                      width: 50,
+                      child: AspectRatio(
+                        aspectRatio: 2 / 3,
+                        child: posterPath != null
+                            ? Image.network(
+                                "https://image.tmdb.org/t/p/w200$posterPath",
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, err, st) => Container(),
+                              )
+                            : null,
+                      ),
+                    )),
+                Expanded(
+                    child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: SpacingManager.md),
+                  child: RichText(
+                    text: TextSpan(
+                        text: title,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith( height: lineHeight),
+                        children: [
+                          TextSpan(
+                              text: releaseDate != null ? " $releaseDate" : "",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(height: lineHeight)),
+                          TextSpan(
+                              text: originalTitle != null
+                                  ? ",'$originalTitle'"
+                                  : "",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                      fontStyle: FontStyle.italic,
+                                      height: lineHeight)),
+                          TextSpan(
+                              text: directorName != null ? ", directed by" : "",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelMedium
+                                  ?.copyWith(height: lineHeight)),
+                          TextSpan(
+                              text: directorName != null ? " $directorName" : "",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelMedium
+                                  ?.copyWith(
+                                      height: lineHeight,
+                                      fontWeight: FontWeightManager.bold))
+                        ]),
+                  ),
+                ))
+              ],
+            ),
           ),
-        ),
-        buildDividerWithLeftPadding()
-      ],
+          buildDividerWithLeftPadding()
+        ],
+      ),
     );
   });
 }

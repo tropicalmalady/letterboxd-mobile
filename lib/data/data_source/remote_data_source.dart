@@ -7,7 +7,9 @@ import 'package:letterboxd/data/response/tmdb/tmdb.dart';
 abstract class RemoteDataSource {
   Future<SignUpResponse> signUp(SignUpRequest request);
   Future<UsernameCheckResponse> usernameCheck(UsernameCheckRequest request);
-  Future<SearchMovieResponse> searchMovies(SearchMovieRequest request);
+  Future<MoviesPreviewResponse> searchMovies(MoviesPreviewRequest request);
+  Future<GetMovieDetailsResponse> getMovieDetails(
+      GetMovieDetailsRequest request);
 }
 
 class RemoteDataSourceImpl implements RemoteDataSource {
@@ -24,7 +26,11 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       _appServiceClient.usernameCheck(request.username);
 
   @override
-  Future<SearchMovieResponse> searchMovies(
-          SearchMovieRequest request) =>
-      _appServiceClient.searchMovies(request.query,request.page);
+  Future<MoviesPreviewResponse> searchMovies(MoviesPreviewRequest request) =>
+      _appServiceClient.searchMovies(request.query, request.page);
+
+  @override
+  Future<GetMovieDetailsResponse> getMovieDetails(
+          GetMovieDetailsRequest request) =>
+      _appServiceClient.getMovieDetails(request.movieId);
 }

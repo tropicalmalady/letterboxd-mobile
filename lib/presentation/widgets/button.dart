@@ -1,49 +1,138 @@
 import 'package:flutter/material.dart';
-import 'package:letterboxd/presentation/managers/managers.dart';
-import 'package:letterboxd/presentation/widgets/divider.dart';
+import 'package:letterboxd/app/utils/functions.dart';
+import 'package:letterboxd/presentation/managers/_managers.dart';
+import 'package:letterboxd/presentation/widgets/_widgets.dart';
 
-Widget buildButton({required String title, required VoidCallback onPressed, Widget? annex}) {
-  return Builder(
-    builder: (context) {
-      return Stack(
-        alignment: Alignment.center,
-        children: [
-          SizedBox(
-            width: double.infinity,
-            child: MaterialButton(
-              onPressed: () {
-                onPressed();
-              },
-              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  title,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: Align(alignment: Alignment.centerRight, child: annex),
-          )
-        ],
-      );
-    }
+Widget buildButton({required VoidCallback onPressed, required Widget child}) {
+  return SizedBox(
+    width: double.infinity,
+    child: OutlinedButton(
+      style: getIntrinsicButtonStyle().copyWith(
+        side: const MaterialStatePropertyAll<BorderSide>(BorderSide.none),
+      ),
+      onPressed: onPressed,
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: child,
+      ),
+    ),
   );
 }
 
-Widget buildArrowAnnexedButtonWithDivider({required String title, required VoidCallback onPressed}) {
+Widget buildButtonWithTextChild(
+    {required String title, required VoidCallback? onPressed, Widget? annex}) {
+  return Builder(builder: (context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton(
+            style: getIntrinsicButtonStyle().copyWith(
+                side:
+                    const MaterialStatePropertyAll<BorderSide>(BorderSide.none),
+                padding: const MaterialStatePropertyAll<EdgeInsetsGeometry>(
+                  EdgeInsets.symmetric(
+                      vertical: 18, horizontal: SpacingManager.md),
+                ),
+                textStyle: MaterialStatePropertyAll<TextStyle>(
+                    Theme.of(context).textTheme.bodyMedium!)),
+            onPressed: onPressed,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                title,
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: SpacingManager.lg),
+          child: Align(alignment: Alignment.centerRight, child: annex),
+        )
+      ],
+    );
+  });
+}
+
+Widget buildTileButton(
+    {required String title,
+    String? imagePath,
+    required VoidCallback onPressed,
+    required String subtitle}) {
+  return Builder(builder: (context) {
+    return OutlinedButton(
+        onPressed: onPressed,
+        style: getIntrinsicButtonStyle().copyWith(
+          side: const MaterialStatePropertyAll<BorderSide>(BorderSide.none),
+          padding: const MaterialStatePropertyAll<EdgeInsetsGeometry>(
+            EdgeInsets.only(left: SpacingManager.md),
+          ),
+        ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+              Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: buildCreditsImage(imagePath: imagePath)),
+              Expanded(
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 8, right: SpacingManager.md * 3),
+                          child: Text(
+                            title,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 4,
+                              bottom: 8,
+                              right: SpacingManager.md * 3),
+                          child: Text(
+                            subtitle,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                    color: ColorManager.primaryColor6,
+                                    fontSize: 15),
+                          ),
+                        ),
+                        buildDivider()
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ]),
+            Padding(
+              padding: const EdgeInsets.only(right: SpacingManager.md),
+              child: Align(
+                  alignment: Alignment.centerRight, child: buildArrowIcon()),
+            )
+          ],
+        ));
+  });
+}
+
+Widget buildButtonWithDivider(
+    {required String title, required VoidCallback? onPressed}) {
   return Column(
     children: [
-      buildButton(title: title,
-          annex: Icon(
-            Icons.arrow_forward_ios,
-            color: ColorManager.primaryColor7,
-            size: 16,
-          ),
+      buildButtonWithTextChild(
+          title: title,
+          annex: onPressed == null ? null : buildArrowIcon(),
           onPressed: onPressed),
       buildDividerWithLeftPadding(12)
     ],
@@ -72,78 +161,91 @@ ButtonStyle getIntrinsicButtonStyle({
       ));
 }
 
-Widget outlinedButtonWidget(
+Widget buildOutlinedButton(
     {required String text,
-    required VoidCallback onPressed,
+    required VoidCallback? onPressed,
     bool isVariant = false}) {
-  return OutlinedButton(
-    onPressed: onPressed,
-    style: getIntrinsicButtonStyle(
-            activeColor: Colors.transparent,
-            textColor: isVariant
-                ? ColorManager.onPrimaryColor4
-                : ColorManager.onPrimaryColor,
-            backgroundColor:
-                isVariant ? ColorManager.accentColor : Colors.transparent)
-        .copyWith(
-            padding: const MaterialStatePropertyAll<EdgeInsetsGeometry>(
-                EdgeInsets.symmetric(vertical: 14, horizontal: 10)),
-            visualDensity: VisualDensity.compact,
-            side: MaterialStatePropertyAll<BorderSide>(isVariant
-                ? BorderSide.none
-                : BorderSide(
-                    color: ColorManager.onPrimaryColor,
-                    width: 1.0,
-                  )),
-            shape: MaterialStatePropertyAll<OutlinedBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4.0),
-              ),
-            )),
-    child: Text(text),
-  );
+  return Builder(builder: (context) {
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: getIntrinsicButtonStyle(
+              activeColor: Colors.transparent,
+              textColor: isVariant
+                  ? ColorManager.onPrimaryColor4
+                  : ColorManager.onPrimaryColor,
+              backgroundColor:
+                  isVariant ? ColorManager.accentColor : Colors.transparent)
+          .copyWith(
+              padding: const MaterialStatePropertyAll<EdgeInsetsGeometry>(
+                  EdgeInsets.symmetric(vertical: 14, horizontal: 10)),
+              visualDensity: VisualDensity.compact,
+              side: MaterialStatePropertyAll<BorderSide>(isVariant
+                  ? BorderSide.none
+                  : BorderSide(
+                      color: ColorManager.onPrimaryColor,
+                      width: 1.0,
+                    )),
+              shape: MaterialStatePropertyAll<OutlinedBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4.0),
+                ),
+              )),
+      child: Text(
+        text,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: isVariant
+                ? ColorManager.onPrimaryColor5
+                : ColorManager.onPrimaryColor),
+      ),
+    );
+  });
 }
 
-Widget passwordVisibilityToggleButtonWidget(
+Widget buildPasswordVisibilityToggleButton(
     {required bool isTextObscured, required VoidCallback onPressed}) {
-  return outlinedButtonWidget(
+  return buildOutlinedButton(
       text: isTextObscured ? "SHOW" : "HIDE", onPressed: onPressed);
 }
 
-Widget signInActionButtonWidget(
+Widget buildSignInActionButton(
     {required String text,
     required VoidCallback onPressed,
     bool isVariant = false}) {
-  return OutlinedButton(
-    onPressed: onPressed,
-    style: getIntrinsicButtonStyle(
-            backgroundColor: isVariant
-                ? ColorManager.accentColor
-                : ColorManager.primaryColor6,
-            textColor: isVariant
-                ? ColorManager.onPrimaryColor5
-                : ColorManager.onPrimaryColor3,
-            activeColor: Colors.transparent)
-        .copyWith(
-      padding: const MaterialStatePropertyAll<EdgeInsetsGeometry>(
-          EdgeInsets.symmetric(vertical: 16, horizontal: 10)),
-      shape: MaterialStatePropertyAll<OutlinedBorder>(
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
+  return Builder(builder: (context) {
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: getIntrinsicButtonStyle(
+              backgroundColor: isVariant
+                  ? ColorManager.accentColor
+                  : ColorManager.primaryColor6,
+              textColor: isVariant
+                  ? ColorManager.onPrimaryColor5
+                  : ColorManager.onPrimaryColor3,
+              activeColor: Colors.transparent)
+          .copyWith(
+        padding: const MaterialStatePropertyAll<EdgeInsetsGeometry>(
+            EdgeInsets.symmetric(vertical: 16, horizontal: 10)),
+        shape: MaterialStatePropertyAll<OutlinedBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
         ),
+        side: const MaterialStatePropertyAll<BorderSide>(BorderSide.none),
       ),
-      side: const MaterialStatePropertyAll<BorderSide>(BorderSide.none),
-    ),
-    child: Text(
-      text,
-      style: TextStyle(
-          fontWeight:
-              isVariant ? FontWeightManager.bold : FontWeightManager.regular),
-    ),
-  );
+      child: Text(
+        text,
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: isVariant
+                ? ColorManager.onPrimaryColor5
+                : ColorManager.onPrimaryColor2,
+            fontWeight:
+                isVariant ? FontWeightManager.bold : FontWeightManager.regular),
+      ),
+    );
+  });
 }
 
-Widget tourButtonWidget(
+Widget buildTourButton(
     {required String text,
     required VoidCallback onPressed,
     hasTopBorderRadius = true,

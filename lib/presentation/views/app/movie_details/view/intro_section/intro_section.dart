@@ -1,14 +1,17 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:letterboxd/presentation/managers/managers.dart';
-import 'package:letterboxd/presentation/views/app/movie_details/poster_hero.dart';
+import 'package:letterboxd/presentation/managers/_managers.dart';
+import 'package:letterboxd/presentation/views/app/movie_details/view/intro_section/poster_hero.dart';
 import 'package:letterboxd/presentation/widgets/_widgets.dart';
-import 'package:letterboxd/presentation/widgets/container.dart';
-import 'package:letterboxd/presentation/widgets/image_poster.dart';
-import 'package:letterboxd/test.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-class BuildMovieDetailsIntro extends StatefulWidget {
+//life in loops
+//the great love
+//bonsoir
+//kolp
+//captain fracasse
+
+class BuildMovieDetailsIntroSection extends StatefulWidget {
   final String? backdropPath;
   final String? posterPath;
   final String title;
@@ -20,10 +23,10 @@ class BuildMovieDetailsIntro extends StatefulWidget {
   final String synopsis;
   final String? trailerLink;
   final Widget child;
-  final bool withPosterImage;
+  final bool isHeroWidget;
   final double initialScrollOffset;
 
-  const BuildMovieDetailsIntro(
+  const BuildMovieDetailsIntroSection(
       {super.key,
       this.backdropPath,
       this.posterPath,
@@ -37,13 +40,13 @@ class BuildMovieDetailsIntro extends StatefulWidget {
       this.trailerLink,
       required this.child,
       this.initialScrollOffset = 0,
-      this.withPosterImage = true});
+      this.isHeroWidget = false});
 
   @override
-  State<BuildMovieDetailsIntro> createState() => _BuildMovieDetailsIntroState();
+  State<BuildMovieDetailsIntroSection> createState() => _BuildMovieDetailsIntroSectionState();
 }
 
-class _BuildMovieDetailsIntroState extends State<BuildMovieDetailsIntro>
+class _BuildMovieDetailsIntroSectionState extends State<BuildMovieDetailsIntroSection>
     with SingleTickerProviderStateMixin {
   final GlobalKey _myWidgetKey = GlobalKey();
   late ScrollController _scrollController;
@@ -70,6 +73,7 @@ class _BuildMovieDetailsIntroState extends State<BuildMovieDetailsIntro>
   }
 
   void _onScroll() {
+    print(_scrollController.offset);
     double animationStartPosition = widget.backdropPath == null
         ? 0
         : (_scrollController.position.viewportDimension / 6.5);
@@ -183,7 +187,7 @@ class _BuildMovieDetailsIntroState extends State<BuildMovieDetailsIntro>
                   )
                 ]),
               ),
-              SliverPersistentHeader(
+            widget.isHeroWidget? buildEmptySliverContainer :SliverPersistentHeader(
                   pinned: true,
                   delegate: AppBarDelegate(
                       opacityStream: _opacityController.stream,
@@ -197,156 +201,149 @@ class _BuildMovieDetailsIntroState extends State<BuildMovieDetailsIntro>
 
   Widget _details() {
     return Builder(builder: (context) {
-      return Container(
-        child: Padding(
-          padding: const EdgeInsets.only(
-              left: SizeManager.horizontalPadding,
-              right: SizeManager.horizontalPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: 4, right: SizeManager.horizontalPadding),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          StreamBuilder<double>(
-                              stream: _opacityController.stream,
-                              builder: (context, snapshot) {
-                                return Opacity(
-                                  opacity: 1 - (snapshot.data ?? 0.0),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        bottom:
-                                            SizeManager.horizontalPadding / 2),
-                                    child: Text(
-                                      widget.title,
+      return Padding(
+        padding: const EdgeInsets.only(
+            left: SpacingManager.md, right: SpacingManager.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: SpacingManager.xs, right: SpacingManager.md),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        StreamBuilder<double>(
+                            stream: _opacityController.stream,
+                            builder: (context, snapshot) {
+                              return Opacity(
+                                opacity: 1 - (snapshot.data ?? 0.0),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: SpacingManager.xs),
+                                  child: Text(
+                                    widget.title,
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge,
+                                  ),
+                                ),
+                              );
+                            }),
+                        widget.originalTitle == null
+                            ? Container()
+                            : Text(widget.originalTitle!,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.copyWith(fontStyle: FontStyle.italic)),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: SpacingManager.md,
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              widget.releaseDate == null
+                                  ? buildEmptyContainer
+                                  : Text(widget.releaseDate!,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headlineLarge,
-                                    ),
-                                  ),
-                                );
-                              }),
-                          widget.originalTitle == null
-                              ? Container()
-                              : Text(widget.originalTitle!,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(fontStyle: FontStyle.italic)),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              top: SizeManager.horizontalPadding,
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                widget.releaseDate == null
-                                    ? buildEmptyContainer
-                                    : Text(widget.releaseDate!,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall),
-                                widget.releaseDate == null ||
-                                        widget.directorName == null
-                                    ? buildEmptyContainer
-                                    : Text(" • ",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium
-                                            ?.copyWith(
-                                                fontSize: FontSizeManager.s20)),
-                                widget.directorName == null
-                                    ? buildEmptyContainer
-                                    : Text("DIRECTED BY",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: SizeManager.horizontalPadding * 1.2),
-                            child: widget.directorName == null
-                                ? buildEmptyContainer
-                                : Text(
-                                    widget.directorName!,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                            fontWeight: FontWeightManager.bold),
-                                  ),
-                          ),
-                          Row(
-                            children: [
-                              widget.trailerLink == null
+                                          .bodySmall),
+                              widget.releaseDate == null ||
+                                      widget.directorName == null
                                   ? buildEmptyContainer
-                                  : Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: SizeManager.horizontalPadding),
-                                      child: _buildTrailerButton(),
-                                    ),
-                              widget.runtime == null
+                                  : Text(" • ",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                              fontSize: FontSizeManager.s20)),
+                              widget.directorName == null
                                   ? buildEmptyContainer
-                                  : Text("${widget.runtime} mins",
-                                      style:
-                                          Theme.of(context).textTheme.bodySmall)
+                                  : Text("DIRECTED BY",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall),
                             ],
-                          )
-                        ],
-                      ),
+                          ),
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(bottom: SpacingManager.lg),
+                          child: widget.directorName == null
+                              ? buildEmptyContainer
+                              : Text(
+                                  widget.directorName!,
+                                  style: Theme.of(context).textTheme.labelLarge,
+                                ),
+                        ),
+                        Row(
+                          children: [
+                            widget.trailerLink == null
+                                ? buildEmptyContainer
+                                : Padding(
+                                    padding: const EdgeInsets.only(
+                                        right: SpacingManager.md),
+                                    child: _buildTrailerButton(),
+                                  ),
+                            widget.runtime == null
+                                ? buildEmptyContainer
+                                : Text("${widget.runtime} mins",
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall)
+                          ],
+                        )
+                      ],
                     ),
                   ),
-                  !widget.withPosterImage
-                      ? buildEmptyContainer
-                      : GestureDetector(
-                          onTap: () {
-                            Navigator.push(context, createPosterHeroRoute(_scrollController.offset));
-                          },
-                          child: Hero(
-                              tag: "poster_image",
-                              child: buildPosterImage(
-                                  width: 100, posterPath: widget.posterPath)))
-                ],
-              ),
-              const SizedBox(
-                height: SizeManager.horizontalPadding,
-              ),
-              widget.tagLine == null
-                  ? buildEmptyContainer
-                  : Text(
-                      widget.tagLine!,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontSize: FontSizeManager.s14, letterSpacing: 1.1),
-                    ),
-              GestureDetector(
-                onTap: _animateAccordion,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.only(top: SizeManager.horizontalPadding * 0.6),
-                  child: Text(
-                    widget.synopsis,
-                    key: _myWidgetKey,
+                ),
+                widget.isHeroWidget
+                    ? buildEmptyContainer
+                    : GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                              context, Routes.movieDetailsPosterHeroRoute,
+                              arguments: PosterHeroPageArguments(
+                                  scrollOffset: _scrollController.offset,
+                                  posterPath: widget.posterPath));
+                        },
+                        child: Hero(
+                            tag: "poster_image",
+                            child: buildPosterImage(
+                                width: 100, posterPath: widget.posterPath)))
+              ],
+            ),
+            const SizedBox(
+              height: SpacingManager.md,
+            ),
+            widget.tagLine == null
+                ? buildEmptyContainer
+                : Text(
+                    widget.tagLine!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium
-                        ?.copyWith(fontSize: FontSizeManager.s14),
+                        ?.copyWith(letterSpacing: 0.9),
                   ),
+            GestureDetector(
+              onTap: _animateAccordion,
+              child: Padding(
+                padding: const EdgeInsets.only(top: SpacingManager.sm),
+                child: Text(
+                  widget.synopsis,
+                  key: _myWidgetKey,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     });
@@ -356,7 +353,8 @@ class _BuildMovieDetailsIntroState extends State<BuildMovieDetailsIntro>
     return Builder(builder: (context) {
       return MaterialButton(
           color: ColorManager.primaryColor6,
-          padding: const EdgeInsets.symmetric(horizontal: 22),
+          padding: const EdgeInsets.symmetric(
+              horizontal: SpacingManager.xs + SpacingManager.lg),
           visualDensity: VisualDensity.compact,
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(8))),
@@ -377,7 +375,7 @@ class _BuildMovieDetailsIntroState extends State<BuildMovieDetailsIntro>
               }
             },
             child: buildGradientContainer(
-                stops: [0.6, 0.65, 1],
+                stops: [0.6, 0.62, 1],
                 child: SizedBox(
                     height: 100,
                     width: MediaQuery.of(context).size.width,
@@ -429,8 +427,8 @@ class AppBarDelegate extends SliverPersistentHeaderDelegate {
               SafeArea(
                 bottom: false,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: SizeManager.horizontalPadding),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: SpacingManager.md),
                   child: Row(
                     children: [
                       Container(
@@ -452,10 +450,10 @@ class AppBarDelegate extends SliverPersistentHeaderDelegate {
                             softWrap: false,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeightManager.bold),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(),
                           ),
                         ),
                       ),

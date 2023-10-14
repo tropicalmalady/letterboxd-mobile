@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:letterboxd/app/utils/constants.dart';
 import 'package:letterboxd/domain/models/_models.dart';
 import 'package:letterboxd/presentation/views/app/search/bloc/state.dart';
 
@@ -8,7 +9,7 @@ class SearchEvent extends Equatable {
 }
 
 class SearchStatusChanged extends SearchEvent {
-  final SearchStatus status;
+  final ApiStatus status;
 
   SearchStatusChanged(this.status);
   @override
@@ -39,12 +40,12 @@ class SearchQueryChanged extends SearchEvent {
   List<Object> get props => [query];
 }
 
-class SearchMoviesPreviewFetched extends SearchEvent {
-  final List<MoviePreviewModel> results;
+class MoviePreviewsPreviewFetched extends SearchEvent {
+  final List<MoviesPreviewResultsModel> results;
   final int page;
   final int totalPages;
 
-  SearchMoviesPreviewFetched(
+  MoviePreviewsPreviewFetched(
       {required this.results, required this.page, required this.totalPages});
   @override
   List<Object> get props => [results, page, totalPages];

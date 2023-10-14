@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:letterboxd/app/utils/functions.dart';
-import 'package:letterboxd/presentation/managers/managers.dart';
+import 'package:letterboxd/presentation/managers/_managers.dart';
 import 'package:letterboxd/presentation/widgets/_widgets.dart';
 
 class ResetPasswordForm extends StatelessWidget {
@@ -25,7 +25,7 @@ class ResetPasswordForm extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    headingLogoWidget(context, text: "Reset Password"),
+                    buildHeadingLogo(context, text: "Reset Password"),
                     _signInFormFieldsWidget(),
                     _singInActionsWidget(context),
                     _footerDescriptionTextWidget(context,
@@ -60,7 +60,7 @@ class ResetPasswordForm extends StatelessWidget {
   Widget _footerDescriptionTextWidget(context, {required String text}) {
     return Padding(
       padding: const EdgeInsets.only(top: 10.0, bottom: 40),
-      child: artworkDescriptionTextWidget(context, text: text),
+      child: buildArtworkDescriptionText(context, text: text),
     );
   }
 
@@ -68,7 +68,7 @@ class ResetPasswordForm extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        outlinedButtonWidget(
+        buildOutlinedButton(
             text: "SIGN IN",
             onPressed: () {
               showSnackBar(context, "CLICKED");
@@ -76,11 +76,11 @@ class ResetPasswordForm extends StatelessWidget {
         const SizedBox(
           width: 16,
         ),
-        outlinedButtonWidget(text: "JOIN", onPressed: () {}),
+        buildOutlinedButton(text: "JOIN", onPressed: () {}),
         const SizedBox(
           width: 32,
         ),
-        outlinedButtonWidget(text: "GO", onPressed: () {}, isVariant: true)
+        buildOutlinedButton(text: "GO", onPressed: () {}, isVariant: true)
       ]),
     );
   }

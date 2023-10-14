@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:letterboxd/presentation/managers/managers.dart';
+import 'package:letterboxd/presentation/managers/_managers.dart';
 
-Widget buildGradientContainer({required Widget child, required List<double> stops}) {
+Widget buildGradientContainer(
+    {required Widget child, required List<double> stops}) {
   return Container(
     decoration: BoxDecoration(
         gradient: LinearGradient(

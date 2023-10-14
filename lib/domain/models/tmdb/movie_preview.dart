@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class MoviesPreviewModel extends Equatable {
   final int page;
-  final List<MoviePreviewModel> results;
+  final List<MoviesPreviewResultsModel> results;
   final int totalPages;
   final int totalResults;
 
@@ -13,10 +13,13 @@ class MoviesPreviewModel extends Equatable {
     required this.totalResults,
   });
 
-  MoviesPreviewModel.initial()
-      : this(page: 1, totalResults: 0, totalPages: 0, results: []);
+  const MoviesPreviewModel.initial()
+      : this(page: 1, totalResults: 0, totalPages: 0, results: const []);
 
-  MoviesPreviewModel copyWith({int? page, List<MoviePreviewModel>? results,int ? totalPages}) =>
+  MoviesPreviewModel copyWith(
+          {int? page,
+          List<MoviesPreviewResultsModel>? results,
+          int? totalPages}) =>
       MoviesPreviewModel(
           page: page ?? this.page,
           results: results ?? this.results,
@@ -24,10 +27,10 @@ class MoviesPreviewModel extends Equatable {
           totalResults: totalResults);
 
   @override
-  List<Object?> get props => [page, results,totalPages];
+  List<Object?> get props => [page, results, totalPages];
 }
 
-class MoviePreviewModel {
+class MoviesPreviewResultsModel extends Equatable {
   final bool adult;
   final String? backdropPath;
   final List<String> genres;
@@ -43,7 +46,7 @@ class MoviePreviewModel {
   final double voteAverage;
   final int voteCount;
 
-  const MoviePreviewModel ({
+  const MoviesPreviewResultsModel({
     required this.adult,
     required this.backdropPath,
     required this.genres,
@@ -60,21 +63,21 @@ class MoviePreviewModel {
     required this.voteCount,
   });
 
-  // @override
-  // List<Object?> get props => [
-  //       adult,
-  //       backdropPath,
-  //       genres,
-  //       id,
-  //       originalLanguage,
-  //       originalTitle,
-  //       overview,
-  //       popularity,
-  //       posterPath,
-  //       releaseDate,
-  //       title,
-  //       video,
-  //       voteAverage,
-  //       voteCount
-  //     ];
+  @override
+  List<Object?> get props => [
+        adult,
+        backdropPath,
+        genres,
+        id,
+        originalLanguage,
+        originalTitle,
+        overview,
+        popularity,
+        posterPath,
+        releaseDate,
+        title,
+        video,
+        voteAverage,
+        voteCount
+      ];
 }

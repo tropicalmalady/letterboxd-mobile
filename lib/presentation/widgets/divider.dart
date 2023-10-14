@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:letterboxd/presentation/managers/managers.dart';
+import 'package:letterboxd/presentation/managers/_managers.dart';
 
 Divider buildDivider({Color? color, double thickness = 1}) => Divider(
       color: color ?? ColorManager.primaryColor4,
@@ -7,7 +7,9 @@ Divider buildDivider({Color? color, double thickness = 1}) => Divider(
       thickness: thickness,
     );
 
-Widget buildDividerWithLeftPadding([double padding=SizeManager.horizontalPadding]) => Padding(
+Widget buildDividerWithLeftPadding(
+        [double padding = SpacingManager.md]) =>
+    Padding(
       padding: EdgeInsets.only(left: padding),
       child: buildDivider(),
     );

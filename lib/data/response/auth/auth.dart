@@ -6,7 +6,7 @@ part 'auth.g.dart';
 @JsonSerializable()
 class SignUpResponse implements BaseResponse<SignUpResponse> {
   @override
-  int? status;
+  int status;
   String message;
 
   SignUpResponse(this.status, this.message);
@@ -23,7 +23,7 @@ class SignUpResponse implements BaseResponse<SignUpResponse> {
 @JsonSerializable()
 class UsernameCheckResponse implements BaseResponse<UsernameCheckResponse> {
   @override
-  int? status;
+  int status;
   bool message;
 
   UsernameCheckResponse(this.status, this.message);

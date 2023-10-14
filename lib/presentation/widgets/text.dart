@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-RichText artworkDescriptionTextWidget(BuildContext context,{required String text}) {
+RichText buildArtworkDescriptionText(BuildContext context,{required String text}) {
   return RichText(
     textAlign: TextAlign.center,
     text: TextSpan(

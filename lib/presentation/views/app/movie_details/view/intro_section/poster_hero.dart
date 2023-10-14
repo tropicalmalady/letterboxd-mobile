@@ -1,23 +1,22 @@
-
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:letterboxd/presentation/views/app/movie_details/movie_details.dart';
-import 'package:letterboxd/presentation/widgets/container.dart';
-import 'package:letterboxd/presentation/widgets/image_poster.dart';
+import 'package:letterboxd/presentation/views/app/movie_details/view/movie_details.dart';
+import 'package:letterboxd/presentation/widgets/_widgets.dart';
 
+class BuildPosterHeroPage extends StatelessWidget {
+  final double _scrollOffset;
+  final String? _posterPath;
 
-class BuildPosterHero extends StatelessWidget {
-  final GlobalKey _widgetKey = GlobalKey();
-  final double offset;
-
-  final _buildImage = buildPosterImage(
-      posterPath: "/wyUxfQCtcPxRzwJtFy0emtfkux8.jpg", width: 300);
-
-  BuildPosterHero(this.offset, {super.key});
+  const BuildPosterHeroPage(
+      {Key? key, required double scrollOffset, String? posterPath})
+      : _scrollOffset = scrollOffset,
+        _posterPath = posterPath,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final buildImage = buildPosterImage(posterPath: _posterPath, width: 300);
+
     return Scaffold(
       body: GestureDetector(
         onTap: () {
@@ -26,7 +25,7 @@ class BuildPosterHero extends StatelessWidget {
         child: Stack(
           children: [
             BuildMovieDetails(
-                withPosterImage: false, initialScrollOffset: offset),
+                isHeroWidget: true, initialScrollOffset: _scrollOffset),
             BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
               child: Container(
@@ -41,7 +40,7 @@ class BuildPosterHero extends StatelessWidget {
                   child: Draggable(
                     onDragEnd: (details) {
                       if (details.offset.dx <
-                          (MediaQuery.of(context).size.width / 1.5) - 300 ||
+                              (MediaQuery.of(context).size.width / 1.5) - 300 ||
                           details.offset.dx >
                               (MediaQuery.of(context).size.width / 3) ||
                           details.offset.dy <
@@ -52,9 +51,9 @@ class BuildPosterHero extends StatelessWidget {
                         Navigator.pop(context);
                       }
                     },
-                    feedback: _buildImage,
+                    feedback: buildImage,
                     childWhenDragging: buildEmptyContainer,
-                    child: _buildImage,
+                    child: buildImage,
                   )),
             )
           ],
@@ -64,16 +63,9 @@ class BuildPosterHero extends StatelessWidget {
   }
 }
 
-Route createPosterHeroRoute(double offset) {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) =>
-        BuildPosterHero(offset),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      return FadeTransition(
-        opacity: animation,
-        child: child,
-      );
-    },
-  );
-}
+class PosterHeroPageArguments {
+  final double scrollOffset;
+  final String? posterPath;
 
+  PosterHeroPageArguments({required this.scrollOffset, this.posterPath});
+}

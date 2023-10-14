@@ -6,19 +6,21 @@ part of 'tmdb.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-SearchMovieResponse _$SearchMovieResponseFromJson(Map<String, dynamic> json) =>
-    SearchMovieResponse(
-      json['status'] as int?,
+MoviesPreviewResponse _$MoviesPreviewResponseFromJson(
+        Map<String, dynamic> json) =>
+    MoviesPreviewResponse(
+      json['status'] as int,
       json['page'] as int,
       json['total_pages'] as int,
       json['total_results'] as int,
       (json['results'] as List<dynamic>)
-          .map((e) => MoviePreviewResponse.fromJson(e as Map<String, dynamic>))
+          .map((e) =>
+              MoviesPreviewResultsResponse.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$SearchMovieResponseToJson(
-        SearchMovieResponse instance) =>
+Map<String, dynamic> _$MoviesPreviewResponseToJson(
+        MoviesPreviewResponse instance) =>
     <String, dynamic>{
       'status': instance.status,
       'page': instance.page,
@@ -27,10 +29,9 @@ Map<String, dynamic> _$SearchMovieResponseToJson(
       'results': instance.results,
     };
 
-MoviePreviewResponse _$MoviePreviewResponseFromJson(
+MoviesPreviewResultsResponse _$MoviesPreviewResultsResponseFromJson(
         Map<String, dynamic> json) =>
-    MoviePreviewResponse(
-      json['status'] as int?,
+    MoviesPreviewResultsResponse(
       json['poster_path'] as String?,
       json['original_title'] as String?,
       json['release_date'] as String?,
@@ -47,10 +48,9 @@ MoviePreviewResponse _$MoviePreviewResponseFromJson(
       json['vote_count'] as int?,
     );
 
-Map<String, dynamic> _$MoviePreviewResponseToJson(
-        MoviePreviewResponse instance) =>
+Map<String, dynamic> _$MoviesPreviewResultsResponseToJson(
+        MoviesPreviewResultsResponse instance) =>
     <String, dynamic>{
-      'status': instance.status,
       'adult': instance.adult,
       'backdrop_path': instance.backdropPath,
       'genres': instance.genres,
@@ -65,4 +65,138 @@ Map<String, dynamic> _$MoviePreviewResponseToJson(
       'video': instance.video,
       'vote_average': instance.voteAverage,
       'vote_count': instance.voteCount,
+    };
+
+GetMovieDetailsResponse _$GetMovieDetailsResponseFromJson(
+        Map<String, dynamic> json) =>
+    GetMovieDetailsResponse(
+      json['status'] as int,
+      GetMovieDetailsResultResponse.fromJson(
+          json['result'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$GetMovieDetailsResponseToJson(
+        GetMovieDetailsResponse instance) =>
+    <String, dynamic>{
+      'status': instance.status,
+      'result': instance.result,
+    };
+
+GetMovieDetailsResultResponse _$GetMovieDetailsResultResponseFromJson(
+        Map<String, dynamic> json) =>
+    GetMovieDetailsResultResponse(
+      json['backdrop_path'] as String?,
+      json['release_date'] as String?,
+      json['directorName'] as String?,
+      json['overview'] as String?,
+      json['original_title'] as String?,
+      json['title'] as String?,
+      json['tagline'] as String?,
+      json['poster_path'] as String?,
+      json['runtime'] as int?,
+      json['trailer'] as String?,
+      json['credits'] == null
+          ? null
+          : GetMovieDetailsResultCreditsResponse.fromJson(
+              json['credits'] as Map<String, dynamic>),
+      (json['studios'] as List<dynamic>?)
+          ?.map(
+              (e) => DetailableIntResponse.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      (json['countries'] as List<dynamic>?)
+          ?.map((e) =>
+              DetailableStringResponse.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      json['original_language'] == null
+          ? null
+          : DetailableStringResponse.fromJson(
+              json['original_language'] as Map<String, dynamic>),
+      (json['alternative_titles'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      (json['genres'] as List<dynamic>?)
+          ?.map(
+              (e) => DetailableIntResponse.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      MoviesPreviewResponse.fromJson(json['similar'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$GetMovieDetailsResultResponseToJson(
+        GetMovieDetailsResultResponse instance) =>
+    <String, dynamic>{
+      'backdrop_path': instance.backdropPath,
+      'release_date': instance.releaseDate,
+      'directorName': instance.directorName,
+      'overview': instance.overview,
+      'original_title': instance.originalTitle,
+      'title': instance.title,
+      'tagline': instance.tagline,
+      'poster_path': instance.posterPath,
+      'runtime': instance.runtime,
+      'trailer': instance.trailer,
+      'credits': instance.credits,
+      'studios': instance.studios,
+      'countries': instance.countries,
+      'original_language': instance.originalLanguage,
+      'alternative_titles': instance.alternativeTitles,
+      'genres': instance.genres,
+      'similar': instance.similar,
+    };
+
+GetMovieDetailsResultCreditsResponse
+    _$GetMovieDetailsResultCreditsResponseFromJson(Map<String, dynamic> json) =>
+        GetMovieDetailsResultCreditsResponse(
+          (json['cast'] as List<dynamic>)
+              .map((e) => GetMovieDetailsResultCreditsCastResponse.fromJson(
+                  e as Map<String, dynamic>))
+              .toList(),
+          (json['crew'] as List<dynamic>)
+              .map((e) => GetMovieDetailsResultCreditsCrewResponse.fromJson(
+                  e as Map<String, dynamic>))
+              .toList(),
+        );
+
+Map<String, dynamic> _$GetMovieDetailsResultCreditsResponseToJson(
+        GetMovieDetailsResultCreditsResponse instance) =>
+    <String, dynamic>{
+      'cast': instance.cast,
+      'crew': instance.crew,
+    };
+
+GetMovieDetailsResultCreditsCastResponse
+    _$GetMovieDetailsResultCreditsCastResponseFromJson(
+            Map<String, dynamic> json) =>
+        GetMovieDetailsResultCreditsCastResponse(
+          json['id'] as int?,
+          json['name'] as String?,
+          json['character'] as String?,
+          json['profile_path'] as String?,
+        );
+
+Map<String, dynamic> _$GetMovieDetailsResultCreditsCastResponseToJson(
+        GetMovieDetailsResultCreditsCastResponse instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'character': instance.character,
+      'profile_path': instance.profilePath,
+    };
+
+GetMovieDetailsResultCreditsCrewResponse
+    _$GetMovieDetailsResultCreditsCrewResponseFromJson(
+            Map<String, dynamic> json) =>
+        GetMovieDetailsResultCreditsCrewResponse(
+          json['id'],
+          json['name'] as String?,
+          json['job'] as String?,
+          json['profile_path'] as String?,
+        );
+
+Map<String, dynamic> _$GetMovieDetailsResultCreditsCrewResponseToJson(
+        GetMovieDetailsResultCreditsCrewResponse instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'job': instance.job,
+      'profile_path': instance.profilePath,
     };

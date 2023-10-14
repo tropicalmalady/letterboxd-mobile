@@ -1,10 +1,11 @@
 import 'dart:async';
 
+import 'package:dartz/dartz.dart';
 import 'package:flash/flash.dart';
 import 'package:flash/flash_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:letterboxd/domain/models/form_element/form_element.dart';
-import 'package:letterboxd/presentation/managers/managers.dart';
+import 'package:letterboxd/presentation/managers/_managers.dart';
 
 void showSnackBar(BuildContext context, String message) {
   context.showFlash<bool>(
@@ -14,7 +15,7 @@ void showSnackBar(BuildContext context, String message) {
             backgroundColor: ColorManager.errorColor,
             position: FlashPosition.top,
             elevation: 0,
-            content: Text(message, textAlign: TextAlign.center),
+            content: Text(message, textAlign: TextAlign.center,style: Theme.of(context).textTheme.titleSmall,),
           ));
 }
 
@@ -42,3 +43,4 @@ class Debounce {
     _timer = Timer(Duration(milliseconds: milliseconds), action);
   }
 }
+

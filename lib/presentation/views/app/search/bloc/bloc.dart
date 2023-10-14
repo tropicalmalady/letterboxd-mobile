@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:letterboxd/app/utils/constants.dart';
 import 'package:letterboxd/data/request/tmdb.dart';
 import 'package:letterboxd/domain/repository/tmdb.dart';
 import 'package:letterboxd/domain/usecase/search_movies.dart';
@@ -14,14 +15,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     on<SearchContentChanged>(_onSearchContentChanged);
     on<SearchTypeChanged>(_onSearchTypeChanged);
     on<SearchQueryChanged>(_onSearchQueryChanged);
-    on<SearchMoviesPreviewFetched>(_onSearchMoviesPreviewFetched);
+    on<MoviePreviewsPreviewFetched>(_onMoviePreviewsPreviewFetched);
     on<SearchReset>(_onSearchReset);
     on<SearchResetWithRecentSearches>(_onSearchResetWithRecentSearches);
     on<SearchNextPageRequested>(_onSearchNextPageRequested);
   }
 
-  void _onSearchMoviesPreviewFetched(
-      SearchMoviesPreviewFetched event, Emitter<SearchState> emit) {
+  void _onMoviePreviewsPreviewFetched(
+      MoviePreviewsPreviewFetched event, Emitter<SearchState> emit) {
     emit(state.setMoviesPreviewResults(
         page: event.page,
         results: event.results,
@@ -59,19 +60,19 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   Future<void> _onSearchNextPageRequested(
       SearchNextPageRequested event, Emitter<SearchState> emit) async {
-    emit(state.setNextPageStatus(SearchStatus.loading));
-    (await SearchMoviesUseCase(_tmdbRepository).execute(
-            SearchMovieRequest(state.query, state.moviesPreview.page + 1)))
+    emit(state.setNextPageStatus(ApiStatus.loading));
+    (await MoviesPreviewUseCase(_tmdbRepository).execute(
+            MoviesPreviewRequest(state.query, state.moviesPreview.page + 1)))
         .fold((l) {
       print("error occurred in _onSearchNextPageRequested $l");
-      emit(state.setNextPageStatus(SearchStatus.initial));
+      emit(state.setNextPageStatus(ApiStatus.initial));
     }, (r) {
       emit(state.setMoviesPreviewWithAdditionalResults(
           totalPages: r.totalPages, page: r.page, newResults: r.results));
-      emit(state.setNextPageStatus(SearchStatus.success));
+      emit(state.setNextPageStatus(ApiStatus.success));
     });
-    await Future.delayed(const Duration(milliseconds: 500),(){
-      emit(state.setNextPageStatus(SearchStatus.initial));
+    await Future.delayed(const Duration(milliseconds: 500), () {
+      emit(state.setNextPageStatus(ApiStatus.initial));
     });
   }
 }

@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-class ColorManager {
+abstract class ColorManager {
   static final Color primaryColor = _colorFromHex("#171b1f");
   static final Color primaryColor1 = _colorFromHex("#20262e");
   static final Color primaryColor2 = _colorFromHex("#202830");
@@ -33,7 +33,7 @@ class ColorManager {
   static final Color accentColor1 = _colorFromHex("#00c030");
   static final Color accentColor2 = _colorFromHex("#00e054");
 
-  static  Color errorColor = _colorFromHex("#ff8000");
+  static Color errorColor = _colorFromHex("#ff8000");
 }
 
 Color _colorFromHex(String hexColorString) {

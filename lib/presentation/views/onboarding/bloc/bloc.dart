@@ -36,8 +36,11 @@ class OnBoardingBloc extends Bloc<OnBoardingEvent, OnBoardingState> {
       Emitter<OnBoardingState> emit) async {
     await emit.forEach(
       _ticker.infiniteTick(),
-      onData: (int index) => state.setCarouselCurrentIndex(
-          regulateLoopCounter(index, state.carousel.data.length)),
+      onData: (int index) {
+        return state.setCarouselCurrentIndex(
+          regulateLoopCounter(index, state.carousel.data.length));
+
+        },
     );
   }
 
@@ -121,4 +124,9 @@ class OnBoardingBloc extends Bloc<OnBoardingEvent, OnBoardingState> {
       OnBoardingSignUpFormReset event, Emitter<OnBoardingState> emit) {
     emit(state.setSignUpStateToDefault());
   }
+
+  void disposeTicker(){
+    _ticker.stopTicker();
+  }
+
 }

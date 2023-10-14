@@ -1,12 +1,13 @@
 import 'package:equatable/equatable.dart';
+import 'package:letterboxd/app/utils/constants.dart';
 import 'package:letterboxd/domain/models/_models.dart';
 
 class SearchState extends Equatable {
   final SearchContent content;
-  final SearchStatus status;
+  final ApiStatus status;
   final SearchType type;
   final String query;
-  final SearchStatus nextPageStatus;
+  final ApiStatus nextPageStatus;
   final MoviesPreviewModel moviesPreview;
 
   const SearchState(
@@ -20,28 +21,28 @@ class SearchState extends Equatable {
   SearchState.initial()
       : this(
             content: SearchContent.categories,
-            status: SearchStatus.initial,
+            status: ApiStatus.initial,
             type: SearchType.films,
             query: "",
-            nextPageStatus: SearchStatus.initial,
+            nextPageStatus: ApiStatus.initial,
             moviesPreview: MoviesPreviewModel.initial());
 
   SearchState.initialWithRecentSearches()
       : this(
             content: SearchContent.recentSearches,
-            status: SearchStatus.initial,
+            status: ApiStatus.initial,
             type: SearchType.films,
             query: "",
-            nextPageStatus: SearchStatus.initial,
+            nextPageStatus: ApiStatus.initial,
             moviesPreview: MoviesPreviewModel.initial());
 
   SearchState copyWith(
           {SearchContent? content,
-          SearchStatus? status,
+          ApiStatus? status,
           SearchType? type,
           int? currentApiPage,
           String? query,
-          SearchStatus? nextPageStatus,
+          ApiStatus? nextPageStatus,
           MoviesPreviewModel? moviesPreview}) =>
       SearchState(
           content: content ?? this.content,
@@ -52,14 +53,14 @@ class SearchState extends Equatable {
           moviesPreview: moviesPreview ?? this.moviesPreview);
 
   SearchState setContent(SearchContent content) => copyWith(content: content);
-  SearchState setStatus(SearchStatus status) => copyWith(
+  SearchState setStatus(ApiStatus status) => copyWith(
       status: status,
-      content: status == SearchStatus.success
+      content: status == ApiStatus.success
           ? SearchContent.searchSuggestions
-          : status == SearchStatus.loading
+          : status == ApiStatus.loading
               ? SearchContent.empty
               : SearchContent.categories);
-  SearchState setNextPageStatus(SearchStatus nextPageStatus) =>
+  SearchState setNextPageStatus(ApiStatus nextPageStatus) =>
       copyWith(nextPageStatus: nextPageStatus);
   SearchState setType(SearchType type) => copyWith(type: type);
   SearchState setCurrentApiPage(int currentApiPage) =>
@@ -67,14 +68,14 @@ class SearchState extends Equatable {
   SearchState setQuery(String query) =>
       copyWith(query: query, moviesPreview: MoviesPreviewModel.initial());
   SearchState setMoviesPreviewResults(
-          {required List<MoviePreviewModel> results,
+          {required List<MoviesPreviewResultsModel> results,
           required int page,
           required int totalPages}) =>
       copyWith(
           moviesPreview: moviesPreview.copyWith(
               results: results, page: page, totalPages: totalPages));
   SearchState setMoviesPreviewWithAdditionalResults(
-          {required List<MoviePreviewModel> newResults,
+          {required List<MoviesPreviewResultsModel> newResults,
           required int page,
           required int totalPages}) =>
       copyWith(
@@ -94,8 +95,6 @@ class SearchState extends Equatable {
 }
 
 enum SearchContent { categories, recentSearches, searchSuggestions, empty }
-
-enum SearchStatus { initial, loading, error, success }
 
 enum SearchType {
   films,

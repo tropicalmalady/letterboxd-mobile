@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:letterboxd/app/app.dart';
 import 'package:letterboxd/app/bloc_observable.dart';
-import 'package:letterboxd/presentation/managers/managers.dart';
+import 'package:letterboxd/presentation/managers/_managers.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,7 +12,7 @@ void main() {
       statusBarIconBrightness: Brightness.light));
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
-Bloc.observer = AppBlocObserver();
+    Bloc.observer = AppBlocObserver();
     runApp(LetterboxdApp());
   });
 }

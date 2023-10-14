@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:letterboxd/presentation/managers/managers.dart';
-import 'package:letterboxd/presentation/widgets/radio.dart';
+import 'package:letterboxd/presentation/managers/_managers.dart';
+import 'package:letterboxd/presentation/widgets/_widgets.dart';
 
-Widget textFormFieldWithAnnexedElementWidget(
+Widget buildTextFormFieldWithAnnexedElement(
     {required TextFormField textFormField,Widget ? child,double ? rightPadding}) {
   return Stack(alignment: Alignment.center, children: [
     textFormField,
@@ -13,7 +13,7 @@ Widget textFormFieldWithAnnexedElementWidget(
   ]);
 }
 
-Widget radioCheckerWidget(
+Widget buildRadioChecker(
     {required Widget child,
     bool isChecked = false,
     required Size size,
@@ -32,8 +32,8 @@ Widget radioCheckerWidget(
                 padding: EdgeInsets.zero,
                 alignment: Alignment.centerRight,
                 icon: isChecked
-                    ? checkedInputRadioWidget()
-                    : uncheckedInputRadioWidget(),
+                    ? buildCheckedInputIcon()
+                    : buildUncheckedInputIcon(),
               ),
             ),
       )

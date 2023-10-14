@@ -1,14 +1,18 @@
 class TickerModel {
-  final int durationInMilliSeconds;
-  const TickerModel({this.durationInMilliSeconds=1000});
+  final int _durationInMilliSeconds;
+  late bool _shouldTick = true;
+  TickerModel({int durationInMilliSeconds = 1000})
+      : _durationInMilliSeconds = durationInMilliSeconds;
 
   Stream<int> infiniteTick() async* {
     int i = 0;
-    while (true) {
+    while (_shouldTick) {
       yield i++;
-      await Future.delayed(Duration(milliseconds: durationInMilliSeconds));
+      await Future.delayed(Duration(milliseconds: _durationInMilliSeconds));
     }
   }
 
-
+  void stopTicker() {
+    _shouldTick = false;
+  }
 }

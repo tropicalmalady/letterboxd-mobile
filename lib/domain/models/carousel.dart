@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:letterboxd/presentation/managers/managers.dart';
+import 'package:letterboxd/presentation/managers/_managers.dart';
 
 class CarouselModel extends Equatable {
   final Iterable<CarouselMovieObjectModel> data;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:letterboxd/presentation/managers/managers.dart';
+import 'package:letterboxd/presentation/managers/_managers.dart';
 import 'package:letterboxd/presentation/views/app/search/view/appbar_searchbar.dart';
 
 PreferredSize buildCustomAppBar(BuildContext context){
@@ -16,7 +16,7 @@ PreferredSize buildCustomAppBar(BuildContext context){
                 alignment: Alignment.topCenter,
                 child: Text(
                   "Search",
-                  style: Theme.of(context).textTheme.headlineLarge,
+                  style: Theme.of(context).textTheme.titleMedium,
                 )),
             const BuildAppBarSearchBar(),
           ],

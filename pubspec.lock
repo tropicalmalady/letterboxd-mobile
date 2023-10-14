@@ -283,6 +283,11 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_web_plugins:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   formz:
     dependency: "direct main"
     description:
@@ -499,6 +504,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.3"
+  rect_getter:
+    dependency: transitive
+    description:
+      name: rect_getter
+      sha256: "1c71e4ab5fb7d83d2b14a8338f979bc9ae57eefba786e7fbc91f6746dac2193d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   retrofit:
     dependency: "direct main"
     description:
@@ -515,6 +528,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.8"
+  scroll_to_index:
+    dependency: transitive
+    description:
+      name: scroll_to_index
+      sha256: b707546e7500d9f070d63e5acf74fd437ec7eeeb68d3412ef7b0afada0b4f176
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.1"
   shelf:
     dependency: transitive
     description:
@@ -704,6 +725,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  vertical_scrollable_tabview:
+    dependency: "direct main"
+    description:
+      name: vertical_scrollable_tabview
+      sha256: f047f28fb03d994cac616797cb8d8c9f63c373e77dd308defcb355ed4f5a0da8
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.9"
   vm_service:
     dependency: transitive
     description:

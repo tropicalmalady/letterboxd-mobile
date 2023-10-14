@@ -6,13 +6,13 @@ import 'package:letterboxd/domain/models/_models.dart';
 import 'package:letterboxd/domain/repository/tmdb.dart';
 import 'package:letterboxd/domain/usecase/_base.dart';
 
-class SearchMoviesUseCase
-    extends BaseUseCase<SearchMovieRequest, MoviesPreviewModel> {
+class MoviesPreviewUseCase
+    extends BaseUseCase<MoviesPreviewRequest, MoviesPreviewModel> {
   final TmdbRepository _repo;
 
-  SearchMoviesUseCase(this._repo);
+  MoviesPreviewUseCase(this._repo);
   @override
   Future<Either<FailureResponse, MoviesPreviewModel>> execute(
-          SearchMovieRequest input) =>
+          MoviesPreviewRequest input) =>
       _repo.searchMovies(input);
 }

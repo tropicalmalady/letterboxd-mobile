@@ -22,6 +22,9 @@ abstract class AppServiceClient {
       @Path("username") String username);
 
   @GET("tmdb/search-movies")
-  Future<SearchMovieResponse> searchMovies(
+  Future<MoviesPreviewResponse> searchMovies(
       @Query("query") String query, @Query("page") int page);
+
+  @GET("tmdb/movie/{movie_id}")
+  Future<GetMovieDetailsResponse> getMovieDetails(@Path("movie_id") int movieId);
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:letterboxd/presentation/managers/image_manager.dart';
+import 'package:letterboxd/presentation/managers/images.dart';
 
-Widget headingLogoWidget(BuildContext context, {required String text}) {
+Widget buildHeadingLogo(BuildContext context, {required String text}) {
   return Column(
     children: [
       Image.asset(
@@ -9,10 +9,10 @@ Widget headingLogoWidget(BuildContext context, {required String text}) {
         width: 100,
       ),
       Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.only(bottom: 16,top:8),
         child: Text(
           text,
-          style: Theme.of(context).textTheme.headlineLarge,
+          style: Theme.of(context).textTheme.titleMedium,
           textAlign: TextAlign.center,
         ),
       )
@@ -20,7 +20,7 @@ Widget headingLogoWidget(BuildContext context, {required String text}) {
   );
 }
 
-Widget letterboxdLogoWidget({required double appWidth}) {
+Widget buildLetterboxdLogo({required double appWidth}) {
   return Padding(
     padding: const EdgeInsets.only(bottom: 8.0),
     child: Center(

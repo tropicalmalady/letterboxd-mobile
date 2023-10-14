@@ -2,15 +2,18 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:letterboxd/domain/models/ticker.dart';
-import 'package:letterboxd/presentation/managers/managers.dart';
+import 'package:letterboxd/presentation/managers/_managers.dart';
 
-class LoaderWidget extends StatefulWidget {
+Widget buildFullscreenLoader() =>
+    Center(child: BuildLoader(withBackdrop: false));
+
+class BuildLoader extends StatefulWidget {
   final Color _frontColor;
   final Color _rearColor;
   final double _fraction;
   final bool _withBackdrop;
 
-  LoaderWidget({Key? key, frontColor, rearColor, fraction, withBackdrop})
+  BuildLoader({Key? key, frontColor, rearColor, fraction, withBackdrop})
       : _frontColor = frontColor ?? ColorManager.errorColor,
         _rearColor = rearColor ?? ColorManager.accentColor,
         _fraction = fraction ?? 1,
@@ -18,12 +21,12 @@ class LoaderWidget extends StatefulWidget {
         super(key: key);
 
   @override
-  State<LoaderWidget> createState() => _LoaderWidgetState();
+  State<BuildLoader> createState() => _BuildLoaderState();
 }
 
-class _LoaderWidgetState extends State<LoaderWidget> {
+class _BuildLoaderState extends State<BuildLoader> {
   late bool _showFrontSide;
-  TickerModel ticker = const TickerModel(durationInMilliSeconds: 700);
+  TickerModel ticker = TickerModel(durationInMilliSeconds: 700);
   late final StreamSubscription<int> subscription;
 
   @override

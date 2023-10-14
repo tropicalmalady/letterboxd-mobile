@@ -5,6 +5,7 @@ import 'package:letterboxd/data/repository_impl/_helper.dart';
 import 'package:letterboxd/data/request/tmdb.dart';
 import 'package:letterboxd/data/response/tmdb/tmdb.dart';
 import 'package:letterboxd/domain/models/_models.dart';
+import 'package:letterboxd/domain/models/tmdb/movie_details.dart';
 import 'package:letterboxd/domain/repository/tmdb.dart';
 
 class TmdbRepositoryImpl implements TmdbRepository {
@@ -14,6 +15,11 @@ class TmdbRepositoryImpl implements TmdbRepository {
 
   @override
   Future<Either<FailureResponse, MoviesPreviewModel>> searchMovies(
-          SearchMovieRequest request) =>
+          MoviesPreviewRequest request) =>
       resolveResponse(() => _remoteDataSource.searchMovies(request));
+
+  @override
+  Future<Either<FailureResponse, MovieDetailsModel>> getMovieDetails(
+          GetMovieDetailsRequest request) =>
+      resolveResponse(() => _remoteDataSource.getMovieDetails(request));
 }

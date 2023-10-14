@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:letterboxd/app/utils/functions.dart';
-import 'package:letterboxd/presentation/managers/managers.dart';
+import 'package:letterboxd/presentation/managers/_managers.dart';
 import 'package:letterboxd/presentation/views/app/search/bloc/bloc.dart';
 import 'package:letterboxd/presentation/views/app/search/bloc/event.dart';
 import 'package:letterboxd/presentation/views/app/search/bloc/state.dart';
@@ -42,38 +42,37 @@ class _BuildAppBarSearchBarState extends State<BuildAppBarSearchBar>
   @override
   void initState() {
     super.initState();
-    _animationController =
-        AnimationController(vsync: this, duration: animationDuration)
-          ..addStatusListener((AnimationStatus status) {
-            if (status == AnimationStatus.forward) {
-              _searchBarHasFocus = true;
-            }
-            if (status == AnimationStatus.reverse) {
-              _searchBarHasFocus = false;
-              _searchController.clear();
-              FocusScope.of(context).requestFocus(FocusNode());
-            }
-          })
-          ..addListener(() {
-            setState(() {});
+    _animationController = AnimationController(
+        vsync: this, duration: animationDuration)
+      ..addStatusListener((AnimationStatus status) {
+        if (status == AnimationStatus.forward) {
+          _searchBarHasFocus = true;
+        }
+        if (status == AnimationStatus.reverse) {
+          _searchBarHasFocus = false;
+          _searchController.clear();
+          FocusScope.of(context).requestFocus(FocusNode());
+        }
+      })
+      ..addListener(() {
+        setState(() {});
 
-            _searchController.addListener(() {
-              if (_searchController.text.isEmpty) {
-                if(_searchBarHasFocus){
-                  context.read<SearchBloc>().add(SearchResetWithRecentSearches());
-                }else {
-                  context.read<SearchBloc>().add(SearchReset());
-                }
-              }
-              else {
-                debounce.run(() {
-                context
-                    .read<SearchBloc>()
-                    .add(SearchQueryChanged(_searchController.text));
-              });
-              }
+        _searchController.addListener(() {
+          if (_searchController.text.isEmpty) {
+            if (_searchBarHasFocus) {
+              context.read<SearchBloc>().add(SearchResetWithRecentSearches());
+            } else {
+              context.read<SearchBloc>().add(SearchReset());
+            }
+          } else {
+            debounce.run(() {
+              context
+                  .read<SearchBloc>()
+                  .add(SearchQueryChanged(_searchController.text));
             });
-          });
+          }
+        });
+      });
 
     _verticalTransitionAnimation = Tween<Offset>(
       begin: const Offset(0, 27),
@@ -156,7 +155,7 @@ class _BuildAppBarSearchBarState extends State<BuildAppBarSearchBar>
         : ColorManager.onPrimaryColor4;
     return Focus(
       onFocusChange: (hasFocus) {
-        if (hasFocus) {
+        if (hasFocus && _searchController.text.isEmpty) {
           _animationController.forward();
           context
               .read<SearchBloc>()
@@ -164,16 +163,22 @@ class _BuildAppBarSearchBarState extends State<BuildAppBarSearchBar>
         }
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: SpacingManager.lg),
         child: TextFormField(
           cursorColor: cursorColor,
           controller: _searchController,
-          style: TextStyle(color: ColorManager.primaryColor4),
+          style: Theme.of(context)
+              .textTheme
+              .bodyMedium
+              ?.copyWith(color: ColorManager.primaryColor4),
           decoration: InputDecoration(
               enabledBorder: border,
               focusedBorder: border,
               hintText: "Find films, reviews, lists, people...",
-              hintStyle: TextStyle(color: cursorColor),
+              hintStyle: Theme.of(context)
+                  .inputDecorationTheme
+                  .hintStyle
+                  ?.copyWith(color: cursorColor, fontSize: FontSizeManager.s14),
               prefixIcon: Icon(
                 Icons.search,
                 size: 24,
@@ -197,8 +202,8 @@ class _BuildAppBarSearchBarState extends State<BuildAppBarSearchBar>
                   ? ColorManager.onPrimaryColor5
                   : ColorManager.primaryColor9,
               isDense: true,
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 12, horizontal: 8)),
+              contentPadding: const EdgeInsets.symmetric(
+                  vertical: SpacingManager.md, horizontal: SpacingManager.sm)),
         ),
       ),
     );
@@ -208,29 +213,29 @@ class _BuildAppBarSearchBarState extends State<BuildAppBarSearchBar>
     return TextButton(
         onPressed: () {
           _animationController.reverse();
-          context.read<SearchBloc>().add(SearchContentChanged(SearchContent.categories));
+          context
+              .read<SearchBloc>()
+              .add(SearchContentChanged(SearchContent.categories));
         },
         style: TextButton.styleFrom(padding: EdgeInsets.zero),
         child: Text(
           "Cancel",
-          style: TextStyle(
-              fontSize: FontSizeManager.s18,
-              color: ColorManager.onPrimaryColor),
+          style: Theme.of(context).textTheme.bodyLarge,
         ));
   }
 
   Widget _buildSearchOptions() {
     return Padding(
-      padding: const EdgeInsets.only(top: 4),
+      padding: const EdgeInsets.only(top: SpacingManager.xs),
       child: SizedBox(
         height: 32,
         child: ListView(
           controller: _scrollController,
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.only(left: 16),
+          padding: const EdgeInsets.only(left: SpacingManager.lg),
           children: searchParameters
               .map((item) => Padding(
-                    padding: const EdgeInsets.only(right: 20),
+                    padding: const EdgeInsets.only(right: SpacingManager.lg),
                     child: _buildSearchOption(
                         text: item,
                         isActive: _searchBarHasFocus &&
@@ -279,17 +284,16 @@ class _BuildAppBarSearchBarState extends State<BuildAppBarSearchBar>
             borderRadius: BorderRadius.circular(24),
             color: isActive ? ColorManager.accentColor1 : Colors.transparent),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+          padding: const EdgeInsets.symmetric(
+              vertical: 0, horizontal: SpacingManager.md),
           child: Align(
             alignment: Alignment.center,
             child: Text(text,
-                style: TextStyle(
-                  fontWeight: FontWeightManager.bold,
-                  fontSize: FontSizeManager.s16,
-                  color: isActive
-                      ? ColorManager.onPrimaryColor5
-                      : ColorManager.onPrimaryColor,
-                )),
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: isActive
+                          ? ColorManager.onPrimaryColor5
+                          : ColorManager.onPrimaryColor,
+                    )),
           ),
         ),
       ),

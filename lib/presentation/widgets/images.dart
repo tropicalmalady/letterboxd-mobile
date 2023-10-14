@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:letterboxd/presentation/managers/managers.dart';
-import 'package:letterboxd/test.dart';
+import 'package:letterboxd/presentation/managers/_managers.dart';
+import 'package:letterboxd/play_ground.dart';
 
 const tmdbSmallImageUrl = "https://image.tmdb.org/t/p/w92";
 const tmdbMediumImageUrl = "https://image.tmdb.org/t/p/w185";
 const tmdbLargeImageUrl = "https://image.tmdb.org/t/p/w300";
 
 final buildPlaceholder = Container(color: ColorManager.primaryColor);
+
+final buildCreditsPlaceholder = Container(color: ColorManager.primaryColor4);
 
 Widget buildImage(String path, [tmdbImageUrl = tmdbMediumImageUrl]) {
   return Container(
@@ -39,4 +41,23 @@ Widget buildBackdropImage({String? backdropPath}) {
   return backdropPath != null
       ? buildImage(backdropPath, tmdbLargeImageUrl)
       : buildPlaceholder;
+}
+
+Widget buildCreditsImage({String? imagePath}) {
+  return Container(
+    clipBehavior: Clip.hardEdge,
+    height: 45,
+    width: 45,
+    decoration: BoxDecoration(
+      color: ColorManager.primaryColor4,
+      borderRadius: const BorderRadius.all(Radius.circular(10)),
+    ),
+    child: imagePath != null
+        ? Image.network(
+            "$tmdbSmallImageUrl$imagePath",
+            errorBuilder: (context, err, st) => buildCreditsPlaceholder,
+            fit: BoxFit.cover,
+          )
+        : buildCreditsPlaceholder,
+  );
 }

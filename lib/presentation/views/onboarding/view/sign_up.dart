@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:letterboxd/app/utils/functions.dart';
 import 'package:letterboxd/domain/models/_models.dart';
-import 'package:letterboxd/presentation/managers/managers.dart';
+import 'package:letterboxd/presentation/managers/_managers.dart';
 import 'package:letterboxd/presentation/views/onboarding/bloc/bloc.dart';
 import 'package:letterboxd/presentation/views/onboarding/bloc/event.dart';
 import 'package:letterboxd/presentation/views/onboarding/bloc/state.dart';
@@ -57,7 +57,7 @@ class _SignUpFormState extends State<SignUpForm> {
         if (state.signUpForm.status.isInProgress) {
           showDialog(
               context: context,
-              builder: (context) => LoaderWidget(),
+              builder: (context) => BuildLoader(),
               barrierDismissible: false);
         }
 
@@ -87,7 +87,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      headingLogoWidget(context, text: "Join Letterboxd"),
+                      buildHeadingLogo(context, text: "Join Letterboxd"),
                       _signInFormFieldsWidget(context, size: size),
                       _singInActionsWidget(context),
                       _footerDescriptionTextWidget(context,
@@ -125,19 +125,19 @@ class _SignUpFormState extends State<SignUpForm> {
   Widget _footerDescriptionTextWidget(context, {required String text}) {
     return Padding(
       padding: const EdgeInsets.only(top: 10.0, bottom: 40),
-      child: artworkDescriptionTextWidget(context, text: text),
+      child: buildArtworkDescriptionText(context, text: text),
     );
   }
 
   Widget _singInActionsWidget(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 16.0),
+      padding: const EdgeInsets.only(top: SpacingManager.lg),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        outlinedButtonWidget(text: "SIGN IN", onPressed: () {}),
+        buildOutlinedButton(text: "SIGN IN", onPressed: () {}),
         const SizedBox(
           width: 16,
         ),
-        outlinedButtonWidget(text: "RESET PASSWORD", onPressed: () {}),
+        buildOutlinedButton(text: "RESET PASSWORD", onPressed: () {}),
         const SizedBox(
           width: 32,
         ),
@@ -149,7 +149,7 @@ class _SignUpFormState extends State<SignUpForm> {
   Widget _submitButtonWidget(BuildContext context) {
     return BlocSelector<OnBoardingBloc, OnBoardingState, SignUpFormModel>(
       selector: (state) => state.signUpForm,
-      builder: (context, state) => outlinedButtonWidget(
+      builder: (context, state) => buildOutlinedButton(
           text: "JOIN",
           onPressed: () {
             List<FormzInput<dynamic, dynamic>> input = [
@@ -208,7 +208,7 @@ class _SignUpFormState extends State<SignUpForm> {
           children: [
             _dividerWidget(),
             Padding(
-              padding: const EdgeInsets.only(left: 16.0),
+              padding: const EdgeInsets.only(left: SpacingManager.lg),
               child: Column(
                 children: [
                   _emailInputFieldWidget(),
@@ -233,13 +233,13 @@ class _SignUpFormState extends State<SignUpForm> {
       builder: (context, state) => StreamBuilder<bool>(
           stream: _isPasswordVisibleController.stream,
           builder: (context, snapshot) {
-            return textFormFieldWithAnnexedElementWidget(
+            return buildTextFormFieldWithAnnexedElement(
                 textFormField: TextFormField(
                   controller: _passwordController,
                   obscureText: !_isPasswordVisible,
                   onChanged: (password) => context.read<OnBoardingBloc>().add(
                       OnBoardingSignUpFormPasswordChanged(password: password)),
-                  style: TextStyle(color: ColorManager.primaryColor5),
+                  style: Theme.of(context).textTheme.bodyLarge,
                   decoration: const InputDecoration(hintText: "Password"),
                 ),
                 child: state.value.isEmpty
@@ -247,15 +247,15 @@ class _SignUpFormState extends State<SignUpForm> {
                     : Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          passwordVisibilityToggleButtonWidget(
+                          buildPasswordVisibilityToggleButton(
                               isTextObscured: !_isPasswordVisible,
                               onPressed: togglePasswordVisibility),
                           const SizedBox(
                             width: 8,
                           ),
                           state.isNotValid
-                              ? invalidInputRadioWidget()
-                              : validInputRadioWidget()
+                              ? buildInvalidInputIcon()
+                              : buildValidInputIcon()
                         ],
                       ));
           }),
@@ -267,21 +267,21 @@ class _SignUpFormState extends State<SignUpForm> {
         selector: (state) => state.signUpForm,
         builder: (context, state) {
           final usernameExists = state.username.exists;
-          return textFormFieldWithAnnexedElementWidget(
+          return buildTextFormFieldWithAnnexedElement(
               textFormField: TextFormField(
                 controller: _usernameController,
                 onChanged: (username) {
                   context.read<OnBoardingBloc>().add(
                       OnBoardingSignUpFormUsernameChanged(username: username));
                 },
-                style: TextStyle(color: ColorManager.primaryColor5),
+                style: Theme.of(context).textTheme.bodyLarge,
                 decoration: const InputDecoration(hintText: "Username"),
               ),
               child: (state.username.isNotValid && !state.username.isPure) ||
                       usernameExists == UsernameFormElementExists.exists
-                  ? invalidInputRadioWidget()
+                  ? buildInvalidInputIcon()
                   : usernameExists == UsernameFormElementExists.doesNotExist
-                      ? validInputRadioWidget()
+                      ? buildValidInputIcon()
                       : null);
         });
   }
@@ -290,7 +290,7 @@ class _SignUpFormState extends State<SignUpForm> {
     return BlocSelector<OnBoardingBloc, OnBoardingState, EmailFormElementModel>(
         selector: (state) => state.signUpForm.email,
         builder: (context, state) {
-          return textFormFieldWithAnnexedElementWidget(
+          return buildTextFormFieldWithAnnexedElement(
               textFormField: TextFormField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
@@ -299,14 +299,14 @@ class _SignUpFormState extends State<SignUpForm> {
                       .read<OnBoardingBloc>()
                       .add(OnBoardingSignUpFormEmailChanged(email: email));
                 },
-                style: TextStyle(color: ColorManager.primaryColor5),
+                style: Theme.of(context).textTheme.bodyLarge,
                 decoration: const InputDecoration(hintText: "Email address"),
               ),
               child: state.isPure
                   ? null
                   : state.isValid
-                      ? validInputRadioWidget()
-                      : invalidInputRadioWidget());
+                      ? buildValidInputIcon()
+                      : buildInvalidInputIcon());
         });
   }
 
@@ -314,7 +314,7 @@ class _SignUpFormState extends State<SignUpForm> {
     return BlocSelector<OnBoardingBloc, OnBoardingState,
         TermsOfUseFormElementModel>(
       selector: (state) => state.signUpForm.termsOfUse,
-      builder: (context, state) => radioCheckerWidget(
+      builder: (context, state) => buildRadioChecker(
           isChecked: state.value,
           child: RichText(
               text: TextSpan(
@@ -338,7 +338,7 @@ class _SignUpFormState extends State<SignUpForm> {
     return BlocSelector<OnBoardingBloc, OnBoardingState,
         PrivacyPolicyFormElementModel>(
       selector: (state) => state.signUpForm.privacyPolicy,
-      builder: (context, state) => radioCheckerWidget(
+      builder: (context, state) => buildRadioChecker(
           isChecked: state.value,
           child: RichText(
               text: TextSpan(

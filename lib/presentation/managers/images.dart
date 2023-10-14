@@ -2,7 +2,6 @@ String Function(String image) getDir(String dir) =>
     (String image) => "assets/images/$dir/$image";
 String getRootDir(String image) => "assets/images/$image";
 
-
 typedef ImageCallback = String Function(String image);
 
 ImageCallback movieBannerDir = getDir("movies");

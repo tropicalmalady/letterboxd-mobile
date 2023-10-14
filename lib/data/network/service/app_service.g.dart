@@ -83,7 +83,7 @@ class _AppServiceClient implements AppServiceClient {
   }
 
   @override
-  Future<SearchMovieResponse> searchMovies(
+  Future<MoviesPreviewResponse> searchMovies(
     String query,
     int page,
   ) async {
@@ -95,7 +95,7 @@ class _AppServiceClient implements AppServiceClient {
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<SearchMovieResponse>(Options(
+        _setStreamType<MoviesPreviewResponse>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -111,7 +111,34 @@ class _AppServiceClient implements AppServiceClient {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = SearchMovieResponse.fromJson(_result.data!);
+    final value = MoviesPreviewResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<GetMovieDetailsResponse> getMovieDetails(int movieId) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<GetMovieDetailsResponse>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'tmdb/movie/${movieId}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = GetMovieDetailsResponse.fromJson(_result.data!);
     return value;
   }
 

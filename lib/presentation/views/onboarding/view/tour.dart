@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import "package:letterboxd/presentation/widgets/_widgets.dart";
-import 'package:letterboxd/presentation/managers/managers.dart';
-import 'package:letterboxd/presentation/managers/string_manager.dart';
+import 'package:letterboxd/presentation/managers/_managers.dart';
+import 'package:letterboxd/presentation/managers/strings.dart';
 
 
 List<Widget> pages = [
@@ -127,23 +127,23 @@ class _TourEndWidget extends StatelessWidget {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.symmetric(horizontal: SpacingManager.xlg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            letterboxdLogoWidget(appWidth: size.width),
+            buildLetterboxdLogo(appWidth: size.width),
             const Text("The social network for film lovers"),
             const SizedBox(height: 32),
-            tourButtonWidget(
+            buildTourButton(
                 text: "Sign in", onPressed: () {}, hasBottomBorderRadius: false),
             buildDivider(color: ColorManager.primaryColor, thickness: 0.1),
-            tourButtonWidget(
+            buildTourButton(
                 text: "Create account",
                 onPressed: () {},
                 hasTopBorderRadius: false),
             const SizedBox(height: 16),
-            tourButtonWidget(text: "Skip this step", onPressed: () {}),
+            buildTourButton(text: "Skip this step", onPressed: () {}),
             const SizedBox(
               height: 8,
             ),

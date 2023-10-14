@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:letterboxd/domain/models/_models.dart';
-import 'package:letterboxd/presentation/managers/color_manager.dart';
+import 'package:letterboxd/presentation/managers/colors.dart';
 import 'package:letterboxd/presentation/views/onboarding/view/onboarding.dart';
 import 'package:letterboxd/presentation/widgets/button.dart';
 import 'package:sticky_headers/sticky_headers.dart';
@@ -64,7 +64,7 @@ class BuildSearchCategories extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     headings[outerIndex],
-                    style: Theme.of(context).textTheme.headlineLarge,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ));
             },
             content: Padding(
@@ -74,11 +74,11 @@ class BuildSearchCategories extends StatelessWidget {
                 physics: const ClampingScrollPhysics(),
                 itemCount: headingsToButtons[headings[outerIndex]]?.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return buildArrowAnnexedButtonWithDivider(
+                  return buildButtonWithDivider(
                       title: headingsToButtons[headings[outerIndex]]![index]
                           .title, onPressed: () {
-                        // Navigator.of(context).push(CupertinoPageRoute(
-                        //     builder: (context) => Scaffold(body: browseByButtons[index].to())));
+                        Navigator.of(context).push(CupertinoPageRoute(
+                            builder: (context) => Scaffold(body: browseByButtons[index].to())));
                       });
                 },
               ),

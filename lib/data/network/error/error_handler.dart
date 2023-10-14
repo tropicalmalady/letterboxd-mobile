@@ -10,13 +10,18 @@ class ErrorHandler implements Exception {
   late FailureResponse failure;
 
   ErrorHandler.handle(dynamic error) {
+
     if (error is DioException) {
+      print(error.stackTrace);
       failure = _handleError(error);
-    } else
-     print(error);
-      failure=DefaultFailureResponse();
     }
+    else {
+      print(error);
+      failure = DefaultFailureResponse();
+    }
+
   }
+}
 
   FailureResponse _handleError(DioException error) {
 var message=error.response?.data["message"];

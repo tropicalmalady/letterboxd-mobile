@@ -45,6 +45,7 @@ dependencies:
   retrofit: ^4.0.1
   sliver_tools: ^0.2.12
   sticky_headers: ^0.3.0+2
+  vertical_scrollable_tabview: ^0.0.9
 
 
 dev_dependencies:
