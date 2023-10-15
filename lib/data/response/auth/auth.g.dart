@@ -8,7 +8,7 @@ part of 'auth.dart';
 
 SignUpResponse _$SignUpResponseFromJson(Map<String, dynamic> json) =>
     SignUpResponse(
-      json['status'] as int,
+      json['status'] as int?,
       json['message'] as String,
     );
 
@@ -21,7 +21,7 @@ Map<String, dynamic> _$SignUpResponseToJson(SignUpResponse instance) =>
 UsernameCheckResponse _$UsernameCheckResponseFromJson(
         Map<String, dynamic> json) =>
     UsernameCheckResponse(
-      json['status'] as int,
+      json['status'] as int?,
       json['message'] as bool,
     );
 

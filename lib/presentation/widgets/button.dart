@@ -8,6 +8,7 @@ Widget buildButton({required VoidCallback onPressed, required Widget child}) {
     width: double.infinity,
     child: OutlinedButton(
       style: getIntrinsicButtonStyle().copyWith(
+        padding: const MaterialStatePropertyAll<EdgeInsets>(EdgeInsets.zero),
         side: const MaterialStatePropertyAll<BorderSide>(BorderSide.none),
       ),
       onPressed: onPressed,

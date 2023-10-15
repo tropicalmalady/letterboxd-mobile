@@ -5,6 +5,7 @@ import 'package:letterboxd/presentation/views/app/movie_details/view/data_sectio
 import 'package:letterboxd/presentation/views/app/movie_details/view/data_section/crew.dart';
 import 'package:letterboxd/presentation/views/app/movie_details/view/data_section/details.dart';
 import 'package:letterboxd/presentation/views/app/movie_details/view/data_section/genres.dart';
+import 'package:letterboxd/presentation/views/app/movie_details/view/data_section/similar_films.dart';
 import 'package:letterboxd/presentation/widgets/_widgets.dart';
 import 'package:letterboxd/presentation/widgets/button.dart';
 
@@ -137,7 +138,8 @@ class _BuildMovieDetailsDataSectionState
               ),
             ),
           ],
-        )
+        ),
+        const BuildMovieDetailsSimilarFilms()
       ],
     );
   }

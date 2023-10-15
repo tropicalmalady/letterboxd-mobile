@@ -25,6 +25,7 @@ class ErrorHandler implements Exception {
 
   FailureResponse _handleError(DioException error) {
 var message=error.response?.data["message"];
+
     switch (error.type) {
       case DioExceptionType.connectionError:
         return ErrorResponseType.CONNECTION_ERROR.getFailureResponse();

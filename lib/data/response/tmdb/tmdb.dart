@@ -9,7 +9,7 @@ part "tmdb.g.dart";
 @JsonSerializable()
 class MoviesPreviewResponse implements BaseResponse<MoviesPreviewModel> {
   @override
-  int status;
+  int ?status;
   int page;
   @JsonKey(name: "total_pages")
   int totalPages;
@@ -102,7 +102,7 @@ class MoviesPreviewResultsResponse
 @JsonSerializable()
 class GetMovieDetailsResponse implements BaseResponse<MovieDetailsModel> {
   @override
-  int status;
+  int ?status;
   GetMovieDetailsResultResponse result;
 
   GetMovieDetailsResponse(this.status, this.result);
@@ -141,6 +141,7 @@ class GetMovieDetailsResultResponse
   @JsonKey(name: "alternative_titles")
   List<String>? alternativeTitles;
   List<DetailableIntResponse>? genres;
+  @JsonKey(name:"recommendations")
   MoviesPreviewResponse similar;
 
   GetMovieDetailsResultResponse(

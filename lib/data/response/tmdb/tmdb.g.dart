@@ -9,7 +9,7 @@ part of 'tmdb.dart';
 MoviesPreviewResponse _$MoviesPreviewResponseFromJson(
         Map<String, dynamic> json) =>
     MoviesPreviewResponse(
-      json['status'] as int,
+      json['status'] as int?,
       json['page'] as int,
       json['total_pages'] as int,
       json['total_results'] as int,
@@ -70,7 +70,7 @@ Map<String, dynamic> _$MoviesPreviewResultsResponseToJson(
 GetMovieDetailsResponse _$GetMovieDetailsResponseFromJson(
         Map<String, dynamic> json) =>
     GetMovieDetailsResponse(
-      json['status'] as int,
+      json['status'] as int?,
       GetMovieDetailsResultResponse.fromJson(
           json['result'] as Map<String, dynamic>),
     );
@@ -118,7 +118,8 @@ GetMovieDetailsResultResponse _$GetMovieDetailsResultResponseFromJson(
           ?.map(
               (e) => DetailableIntResponse.fromJson(e as Map<String, dynamic>))
           .toList(),
-      MoviesPreviewResponse.fromJson(json['similar'] as Map<String, dynamic>),
+      MoviesPreviewResponse.fromJson(
+          json['recommendations'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$GetMovieDetailsResultResponseToJson(
@@ -140,7 +141,7 @@ Map<String, dynamic> _$GetMovieDetailsResultResponseToJson(
       'original_language': instance.originalLanguage,
       'alternative_titles': instance.alternativeTitles,
       'genres': instance.genres,
-      'similar': instance.similar,
+      'recommendations': instance.similar,
     };
 
 GetMovieDetailsResultCreditsResponse
