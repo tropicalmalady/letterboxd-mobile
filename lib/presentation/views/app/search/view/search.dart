@@ -6,6 +6,7 @@ import 'package:letterboxd/presentation/views/app/search/bloc/bloc.dart';
 import 'package:letterboxd/presentation/views/app/search/bloc/state.dart';
 import 'package:letterboxd/presentation/views/app/search/view/appbar.dart';
 import 'package:letterboxd/presentation/views/app/search/view/categories.dart';
+import 'package:letterboxd/presentation/views/app/search/view/recent_searches.dart';
 import 'package:letterboxd/presentation/views/app/search/view/suggestion.dart';
 import 'package:letterboxd/data/request/tmdb.dart';
 import 'package:letterboxd/domain/repository/tmdb.dart';
@@ -29,7 +30,7 @@ class BuildSearch extends StatelessWidget {
                           .execute(MoviesPreviewRequest(
                               state.query, state.moviesPreview.page)))
                       .fold((l) => print("dd ${l.code}"), (r) {
-                    bloc.add(MoviePreviewsPreviewFetched(
+                    bloc.add(SearchMoviePreviewsPreviewFetched(
                         page: r.page,
                         totalPages: r.totalPages,
                         results: r.results));
@@ -38,13 +39,6 @@ class BuildSearch extends StatelessWidget {
                 },
                 listenWhen: (prev, next) =>
                     (prev.query != next.query) && (next.query.isNotEmpty)),
-            BlocListener<SearchBloc, SearchState>(
-                listener: (context, state) {
-                  context.read<SearchBloc>().add(SearchReset());
-                },
-                listenWhen: (prev, next) =>
-                    (next.content != SearchContent.recentSearches) &&
-                    (next.query.isEmpty)),
           ],
           child: BlocSelector<SearchBloc, SearchState, SearchContent>(
             selector: (state) => state.content,
@@ -60,9 +54,7 @@ class BuildSearch extends StatelessWidget {
                     : const BuildSearchFilmSuggestions();
               }
               if (state == SearchContent.recentSearches) {
-                return const Center(
-                  child: Text("Recent Searches"),
-                );
+                return buildSearchRecentSearches();
               }
               if (state == SearchContent.categories) {
                 return const BuildSearchCategories();

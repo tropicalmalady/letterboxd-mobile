@@ -32,9 +32,13 @@ Widget buildButtonWithTextChild(
             style: getIntrinsicButtonStyle().copyWith(
                 side:
                     const MaterialStatePropertyAll<BorderSide>(BorderSide.none),
-                padding: const MaterialStatePropertyAll<EdgeInsetsGeometry>(
-                  EdgeInsets.symmetric(
-                      vertical: 18, horizontal: SpacingManager.md),
+                padding: MaterialStatePropertyAll<EdgeInsetsGeometry>(
+                  EdgeInsets.only(
+                      top: SpacingManager.xxxs*18,
+                      left: SpacingManager.md,
+                      bottom: SpacingManager.xxxs*18,
+                    right: annex==null ?SpacingManager.md : SpacingManager.xxxlg
+                  ),
                 ),
                 textStyle: MaterialStatePropertyAll<TextStyle>(
                     Theme.of(context).textTheme.bodyMedium!)),
@@ -43,6 +47,8 @@ Widget buildButtonWithTextChild(
               alignment: Alignment.centerLeft,
               child: Text(
                 title,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
             ),
           ),
@@ -128,12 +134,12 @@ Widget buildTileButton(
 }
 
 Widget buildButtonWithDivider(
-    {required String title, required VoidCallback? onPressed}) {
+    {required String title, VoidCallback? onPressed,Widget? annex}) {
   return Column(
     children: [
       buildButtonWithTextChild(
           title: title,
-          annex: onPressed == null ? null : buildArrowIcon(),
+          annex: annex ?? (onPressed == null ? null : buildArrowIcon()),
           onPressed: onPressed),
       buildDividerWithLeftPadding(12)
     ],

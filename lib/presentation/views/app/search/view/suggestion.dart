@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:letterboxd/app/utils/constants.dart';
+import 'package:letterboxd/domain/models/_models.dart';
 import 'package:letterboxd/presentation/managers/_managers.dart';
 import 'package:letterboxd/presentation/views/app/movie_details/bloc/bloc.dart';
 import 'package:letterboxd/presentation/views/app/movie_details/view/movie_details.dart';
@@ -49,14 +50,13 @@ class _BuildSearchFilmSuggestionsState
           itemBuilder: (context, index) => (nextPageLoading &&
                   (index + 1 == previewsLength + 1))
               ? Padding(
-                  padding:
-                      const EdgeInsets.only(top: SpacingManager.md),
+                  padding: const EdgeInsets.only(top: SpacingManager.md),
                   child: BuildLoader(
                     withBackdrop: false,
                     fraction: 0.5,
                   ))
               : buildSearchFilmSuggestion(
-            id:state.moviesPreview.results[index].id,
+                  id: state.moviesPreview.results[index].id,
                   title: state.moviesPreview.results[index].title,
                   originalTitle:
                       state.moviesPreview.results[index].originalTitle ==
@@ -81,15 +81,18 @@ Widget buildSearchFilmSuggestion(
     String? releaseDate,
     String? originalTitle,
     String? directorName,
-    required  int id
-    }) {
+    required int id}) {
   const lineHeight = 1.5;
   return Builder(builder: (context) {
     return buildButton(
-      onPressed: (){
+      onPressed: () {
+        context.read<SearchBloc>().add(SearchRecentSearchAdded(
+            recentSearch: RecentSearchModel(
+                searchType: SearchType.films,
+                searchQuery: context.read<SearchBloc>().state.query,
+                id: id)));
         context.read<MovieDetailsBloc>().add(MovieDetailsRequested(id));
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const BuildMovieDetails()));
+        Navigator.pushNamed(context, Routes.movieDetailsRoute);
       },
       child: Column(
         children: [
@@ -104,7 +107,8 @@ Widget buildSearchFilmSuggestion(
                     clipBehavior: Clip.hardEdge,
                     padding: const EdgeInsets.all(0.7),
                     decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(Radius.circular(4)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(4)),
                         border: Border.all(
                             width: 0.7, color: ColorManager.primaryColor7)),
                     child: SizedBox(
@@ -122,15 +126,15 @@ Widget buildSearchFilmSuggestion(
                     )),
                 Expanded(
                     child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: SpacingManager.md),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: SpacingManager.md),
                   child: RichText(
                     text: TextSpan(
                         text: title,
                         style: Theme.of(context)
                             .textTheme
                             .titleMedium
-                            ?.copyWith( height: lineHeight),
+                            ?.copyWith(height: lineHeight),
                         children: [
                           TextSpan(
                               text: releaseDate != null ? " $releaseDate" : "",
@@ -155,7 +159,8 @@ Widget buildSearchFilmSuggestion(
                                   .labelMedium
                                   ?.copyWith(height: lineHeight)),
                           TextSpan(
-                              text: directorName != null ? " $directorName" : "",
+                              text:
+                                  directorName != null ? " $directorName" : "",
                               style: Theme.of(context)
                                   .textTheme
                                   .labelMedium

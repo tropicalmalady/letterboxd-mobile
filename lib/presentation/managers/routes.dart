@@ -19,11 +19,15 @@ class RouteManager {
     switch (settings.name) {
       case Routes.defaultRoute:
       case Routes.searchMoviesRoute:
-      return MaterialPageRoute(
-          builder: (_) => _appWithScaffold(child: const BuildSearch()));
+        return MaterialPageRoute(
+            builder: (_) => _appWithScaffold(child: const BuildSearch()));
+      case Routes.movieDetailsRoute:
+        return MaterialPageRoute(builder: (_) => const BuildMovieDetails());
+
       case Routes.playgroundRoute:
         return MaterialPageRoute(
             builder: (_) => _appWithScaffold(child: const BuildPlayGround()));
+
       case Routes.onBoardingRoute:
         return MaterialPageRoute(
             builder: (_) => _appWithScaffold(child: const OnBoardingView()));

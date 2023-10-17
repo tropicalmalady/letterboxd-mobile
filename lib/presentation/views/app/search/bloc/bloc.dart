@@ -15,14 +15,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     on<SearchContentChanged>(_onSearchContentChanged);
     on<SearchTypeChanged>(_onSearchTypeChanged);
     on<SearchQueryChanged>(_onSearchQueryChanged);
-    on<MoviePreviewsPreviewFetched>(_onMoviePreviewsPreviewFetched);
+    on<SearchMoviePreviewsPreviewFetched>(_onSearchMoviePreviewsFetched);
     on<SearchReset>(_onSearchReset);
     on<SearchResetWithRecentSearches>(_onSearchResetWithRecentSearches);
     on<SearchNextPageRequested>(_onSearchNextPageRequested);
+    on<SearchRecentSearchAdded>(_onSearchRecentSearchAdded);
   }
 
-  void _onMoviePreviewsPreviewFetched(
-      MoviePreviewsPreviewFetched event, Emitter<SearchState> emit) {
+  void _onSearchMoviePreviewsFetched(
+      SearchMoviePreviewsPreviewFetched event, Emitter<SearchState> emit) {
     emit(state.setMoviesPreviewResults(
         page: event.page,
         results: event.results,
@@ -74,5 +75,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     await Future.delayed(const Duration(milliseconds: 500), () {
       emit(state.setNextPageStatus(ApiStatus.initial));
     });
+  }
+
+  void _onSearchRecentSearchAdded(
+      SearchRecentSearchAdded event, Emitter<SearchState> emit) {
+    emit(state.setAddRecentSearch(event.recentSearch));
   }
 }

@@ -59,11 +59,7 @@ class _BuildAppBarSearchBarState extends State<BuildAppBarSearchBar>
 
         _searchController.addListener(() {
           if (_searchController.text.isEmpty) {
-            if (_searchBarHasFocus) {
-              context.read<SearchBloc>().add(SearchResetWithRecentSearches());
-            } else {
-              context.read<SearchBloc>().add(SearchReset());
-            }
+            context.read<SearchBloc>().add(SearchResetWithRecentSearches());
           } else {
             debounce.run(() {
               context
