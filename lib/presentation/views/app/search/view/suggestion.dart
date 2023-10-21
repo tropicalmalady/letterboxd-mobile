@@ -9,6 +9,7 @@ import 'package:letterboxd/presentation/views/app/search/bloc/bloc.dart';
 import 'package:letterboxd/presentation/views/app/search/bloc/event.dart';
 
 import 'package:letterboxd/presentation/views/app/search/bloc/state.dart';
+import 'package:letterboxd/presentation/views/app/search/cubit/cubit.dart';
 import 'package:letterboxd/presentation/widgets/_widgets.dart';
 
 class BuildSearchFilmSuggestions extends StatefulWidget {
@@ -86,11 +87,10 @@ Widget buildSearchFilmSuggestion(
   return Builder(builder: (context) {
     return buildButton(
       onPressed: () {
-        context.read<SearchBloc>().add(SearchRecentSearchAdded(
-            recentSearch: RecentSearchModel(
-                searchType: SearchType.films,
-                searchQuery: context.read<SearchBloc>().state.query,
-                id: id)));
+        context.read<RecentSearchCubit>().addRecentSearch(RecentSearchModel(
+            searchType: SearchType.films,
+            searchQuery: context.read<SearchBloc>().state.query,
+            id: id));
         context.read<MovieDetailsBloc>().add(MovieDetailsRequested(id));
         Navigator.pushNamed(context, Routes.movieDetailsRoute);
       },

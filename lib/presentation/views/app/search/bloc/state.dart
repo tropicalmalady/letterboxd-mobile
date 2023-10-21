@@ -1,9 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:letterboxd/app/utils/constants.dart';
 import 'package:letterboxd/domain/models/_models.dart';
-import 'package:json_annotation/json_annotation.dart';
 
-@JsonSerializable()
 class SearchState extends Equatable {
   final SearchContent content;
   final ApiStatus status;
@@ -11,9 +9,6 @@ class SearchState extends Equatable {
   final String query;
   final ApiStatus nextPageStatus;
   final MoviesPreviewModel moviesPreview;
-  final CappedStack<RecentSearchModel> recentSearches;
-
-
 
   const SearchState(
       {required this.content,
@@ -22,7 +17,7 @@ class SearchState extends Equatable {
       required this.query,
       required this.nextPageStatus,
       required this.moviesPreview,
-      required this.recentSearches});
+     });
 
   SearchState.initial()
       : this(
@@ -31,37 +26,23 @@ class SearchState extends Equatable {
             type: SearchType.films,
             query: "",
             nextPageStatus: ApiStatus.initial,
-            moviesPreview: const MoviesPreviewModel.initial(),
-            recentSearches: CappedStack(40));
+            moviesPreview: const MoviesPreviewModel.initial(),);
 
-  const SearchState.initialWithRecentSearches(
-      {required CappedStack<RecentSearchModel> recentSearches})
-      : this(
-            content: SearchContent.recentSearches,
-            status: ApiStatus.initial,
-            type: SearchType.films,
-            query: "",
-            nextPageStatus: ApiStatus.initial,
-            moviesPreview: const MoviesPreviewModel.initial(),
-            recentSearches: recentSearches);
-
-  SearchState copyWith(
-          {SearchContent? content,
-          ApiStatus? status,
-          SearchType? type,
-          int? currentApiPage,
-          String? query,
-          ApiStatus? nextPageStatus,
-          MoviesPreviewModel? moviesPreview,
-          CappedStack<RecentSearchModel>? recentSearches}) =>
+  SearchState copyWith({SearchContent? content,
+    ApiStatus? status,
+    SearchType? type,
+    int? currentApiPage,
+    String? query,
+    ApiStatus? nextPageStatus,
+    MoviesPreviewModel? moviesPreview,
+  }) =>
       SearchState(
           content: content ?? this.content,
           status: status ?? this.status,
           type: type ?? this.type,
           query: query ?? this.query,
           nextPageStatus: nextPageStatus ?? this.nextPageStatus,
-          moviesPreview: moviesPreview ?? this.moviesPreview,
-          recentSearches: recentSearches ?? this.recentSearches);
+          moviesPreview: moviesPreview ?? this.moviesPreview);
 
   SearchState setContent(SearchContent content) => copyWith(content: content);
   SearchState setStatus(ApiStatus status) => copyWith(
@@ -97,14 +78,11 @@ class SearchState extends Equatable {
   SearchState setIncrementMoviesPreviewPage() => copyWith(
       moviesPreview: moviesPreview.copyWith(page: moviesPreview.page + 1));
   SearchState setSearchReset() => SearchState.initial();
-  SearchState setSearchResetWithRecentSearches() =>
-      SearchState.initialWithRecentSearches(recentSearches: recentSearches);
-  SearchState setAddRecentSearch(RecentSearchModel search) =>
-      copyWith(recentSearches: recentSearches.add(search));
+
 
   @override
   List<Object> get props =>
-      [content, status, type, moviesPreview, query, nextPageStatus,recentSearches];
+      [content, status, type, moviesPreview, query, nextPageStatus];
 }
 
 enum SearchContent { categories, recentSearches, searchSuggestions, empty }
@@ -138,22 +116,3 @@ extension SearchTypeExtension on SearchType {
   }
 }
 
-class CappedStack<T> {
-  Set<T> _items = {};
-
-  Set<T> get element => _items;
-  final int capacity;
-
-  CappedStack(this.capacity);
-
-  CappedStack<T> add(T item) {
-    _items = {item, ..._items}.take(capacity).toSet();
-    return this;
-  }
-  bool get isEmpty=>_items.isEmpty;
-
-  @override
-  String toString() {
-    return _items.toString();
-  }
-}

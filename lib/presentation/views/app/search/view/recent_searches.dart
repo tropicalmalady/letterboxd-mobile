@@ -5,19 +5,19 @@ import 'package:letterboxd/presentation/managers/_managers.dart';
 import 'package:letterboxd/presentation/views/app/movie_details/bloc/bloc.dart';
 import 'package:letterboxd/presentation/views/app/search/bloc/bloc.dart';
 import 'package:letterboxd/presentation/views/app/search/bloc/state.dart';
+import 'package:letterboxd/presentation/views/app/search/cubit/cubit.dart';
 import 'package:letterboxd/presentation/widgets/_widgets.dart';
 
 Widget buildSearchRecentSearches() {
-  return BlocSelector<SearchBloc, SearchState, CappedStack<RecentSearchModel>>(
-      selector: (state) => state.recentSearches,
+  return BlocBuilder<RecentSearchCubit,RecentSearchModelCappedStack>(
       builder: (context, state) {
-        if (state.isEmpty) {
+        if (state.items.isEmpty) {
           return const Center(
             child: Text("Recent Searches"),
           );
         } else {
           return buildRecentSearchesListTiles(
-              title: "Recent Searches", items: state.element);
+              title: "Recent Searches", items: state.items);
         }
       });
 }

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:letterboxd/app/utils/constants.dart';
 import 'package:letterboxd/presentation/views/app/movie_details/bloc/bloc.dart';
 import 'package:letterboxd/presentation/views/app/movie_details/view/_view.dart';
-import 'package:letterboxd/presentation/views/app/movie_details/view/intro_section/intro_section.dart';
 import 'package:letterboxd/presentation/widgets/_widgets.dart';
 
 class BuildMovieDetails extends StatelessWidget {

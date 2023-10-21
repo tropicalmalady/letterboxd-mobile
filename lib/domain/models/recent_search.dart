@@ -11,7 +11,7 @@ class RecentSearchModel extends Equatable {
   final int id;
 
   Map<String,dynamic> toJson()=>_$RecentSearchModelToJson(this);
-  RecentSearchModel fromJson(Map<String,dynamic> json)=>_$RecentSearchModelFromJson(json);
+ static RecentSearchModel fromJson(Map<String,dynamic> json)=>_$RecentSearchModelFromJson(json);
 
   const RecentSearchModel(
       {required this.searchQuery, required this.searchType, required this.id});

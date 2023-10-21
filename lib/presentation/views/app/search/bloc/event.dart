@@ -53,19 +53,7 @@ class SearchReset extends SearchEvent {
   List<Object?> get props => [];
 }
 
-class SearchResetWithRecentSearches extends SearchEvent {
-  @override
-  List<Object?> get props => [];
-}
-
 class SearchNextPageRequested extends SearchEvent {
-  @override
-  List<Object?> get props => [];
-}
-
-class SearchRecentSearchAdded extends SearchEvent {
-  final RecentSearchModel recentSearch;
-  SearchRecentSearchAdded({required this.recentSearch});
   @override
   List<Object?> get props => [];
 }
