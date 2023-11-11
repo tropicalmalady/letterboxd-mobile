@@ -13,21 +13,38 @@ class BuildPlayGround extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(child: BuildApp());
+    return Scaffold(
+        appBar: AppBar(),
+        body: BuildAccordionContainer(
+          color: ColorManager.primaryColor4,
+          firstChild: firstChild(),
+          offset: (100 / 0.67) + SpacingManager.xlg,
+          secondChild: Column(
+            children: [
+              buildDivider(color: ColorManager.primaryColor5, thickness: 0.3)
+            ],
+          ),
+        ));
   }
 }
 
-class BuildApp extends StatefulWidget {
-  const BuildApp({Key? key}) : super(key: key);
-
-  @override
-  State<BuildApp> createState() => _BuildAppState();
+Widget firstChild({String? posterPath, String? text = ""}) {
+  return Padding(
+    padding: const EdgeInsets.only(
+        left: SpacingManager.md,
+        right: SpacingManager.md,
+        top: SpacingManager.xlg),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        buildPosterImage(width: 100, posterPath: posterPath),
+        const SizedBox(
+          width: SpacingManager.md,
+        ),
+        Expanded(
+          child: Text(text!),
+        )
+      ],
+    ),
+  );
 }
-
-class _BuildAppState extends State<BuildApp> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
-
