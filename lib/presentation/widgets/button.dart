@@ -21,7 +21,7 @@ Widget buildButton({required VoidCallback onPressed, required Widget child}) {
 }
 
 Widget buildButtonWithTextChild(
-    {required String title, required VoidCallback? onPressed, Widget? annex}) {
+    {required String title, required VoidCallback? onPressed, Widget? annex,Color? backgroundColor,Color? activeColor}) {
   return Builder(builder: (context) {
     return Stack(
       alignment: Alignment.center,
@@ -29,7 +29,7 @@ Widget buildButtonWithTextChild(
         SizedBox(
           width: double.infinity,
           child: OutlinedButton(
-            style: getIntrinsicButtonStyle().copyWith(
+            style: getIntrinsicButtonStyle(backgroundColor: backgroundColor,activeColor: activeColor).copyWith(
                 side:
                     const MaterialStatePropertyAll<BorderSide>(BorderSide.none),
                 padding: MaterialStatePropertyAll<EdgeInsetsGeometry>(
